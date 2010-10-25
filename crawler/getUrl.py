@@ -47,12 +47,16 @@ def main():
                
                 page=urllib2.build_opener()
                 page.addheaders = [('Referer', d.feed.link), ('User-agent','Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)')]
-                r=page.open(item.link)
-                txt=r.read()
-                
-                out=open(sys.argv[1]+"/"+nome,'w')
-                out.write(txt)
-                out.close()
+                try:
+                    r=page.open(item.link)
+                    txt=r.read()
+                    out=open(sys.argv[1]+"/"+nome,'w')
+                    out.write(txt)
+                    out.close()
+                except:
+                    out2=open(sys.argv[1]+"/"+"notfound.txt", 'a')
+                    out2.write(unicode(item.link).encode("utf-8")+"\n")
+                    out2.close()
                 
                 f.write(unicode(item.link).encode("utf-8")+"\n") # Add this item to the downloaded URLS file
                 f.flush() # Let's flush the internal buffer
