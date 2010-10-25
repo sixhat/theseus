@@ -1,0 +1,189 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>eccs10bursaries &mdash; Theseus v0.6.0rc documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.6.0rc',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Theseus v0.6.0rc documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Theseus v0.6.0rc documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for eccs10bursaries</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># encoding: utf-8</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">eccs10bursaries.py</span>
+<span class="sd">==================</span>
+
+<span class="sd">This example will demonstrate the use of Theseus to process a set of texts</span>
+<span class="sd">that are archived in a folder ./TXT</span>
+
+<span class="sd">Text Files are named 01.txt ... 11.txt</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">theseus</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../howto.html#eccs10bursaries.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This example will demonstrate the use of Theseus to process a set of texts</span>
+<span class="sd">    that are archived in a folder ./TXT</span>
+
+<span class="sd">    Text Files are named 01.txt ... 11.txt</span>
+<span class="sd">    </span>
+<span class="sd">    Check the source code to detailed step by step instructions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># 1. Let&#39;s get a List of TXT Files in the Directory</span>
+    
+    <span class="n">path</span><span class="o">=</span><span class="s">&quot;./TXT/&quot;</span>
+    <span class="n">dirList</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    
+    <span class="c"># 2. Let&#39;s create a Channel and a Domain</span>
+    
+    <span class="n">reports</span> <span class="o">=</span> <span class="n">theseus</span><span class="o">.</span><span class="n">Channel</span><span class="p">(</span><span class="s">&#39;ECCS10 Bursaries&#39;</span><span class="p">)</span>
+    <span class="n">dom</span> <span class="o">=</span> <span class="n">theseus</span><span class="o">.</span><span class="n">Domain</span><span class="p">(</span><span class="s">&#39;ECCS10 Bursaries&#39;</span><span class="p">)</span>
+    
+    <span class="c"># 3. Let&#39;s load each Text File into a DocNode and add this DocNode to the Channel</span>
+    <span class="n">docs</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">dirList</span><span class="p">:</span>
+        <span class="c"># 3.0 - Check to see if file has a .txt extension</span>
+        <span class="k">if</span> <span class="nb">file</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span><span class="o">!=</span><span class="s">&quot;.txt&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+        
+        <span class="c"># 3.1 - Read File</span>
+        <span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="nb">file</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="c"># 3.1.1 Pay attention to encoding problems with text. In this case we convert everything to utf8</span>
+        <span class="n">txt</span><span class="o">=</span><span class="nb">unicode</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s">&#39;utf8&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="c"># 2 - Create new DocNode</span>
+        <span class="n">doc</span><span class="o">=</span><span class="n">theseus</span><span class="o">.</span><span class="n">DocNode</span><span class="p">()</span>
+        <span class="c"># 3.2.1 - set txt of DocNode and name</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">txt</span><span class="o">=</span><span class="n">txt</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">fnm</span><span class="o">=</span><span class="nb">file</span>
+        <span class="c"># 3.2.2 - extract sentences of DocNode - this cleans the text on each sentence</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">extractSentences</span><span class="p">()</span>
+                
+        <span class="c"># 3.3 Lets add these words to our Domain</span>
+        <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">sentences</span><span class="p">:</span>
+            <span class="n">dom</span><span class="o">.</span><span class="n">addWords</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">cleanedWords</span><span class="p">)</span>
+        
+        <span class="c"># 3.4 Let&#39;s add this document to the reports channel</span>
+        <span class="n">reports</span><span class="o">.</span><span class="n">addDocument</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="n">docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        
+        
+    <span class="c"># 4. Let&#39;s export the Domain to a File</span>
+    <span class="n">dom</span><span class="o">.</span><span class="n">exportDomain</span><span class="p">()</span>
+    
+    <span class="c"># 5. Let&#39;s iterate over the reports Channel&#39;s Documents to calculate the score of each sentence</span>
+    <span class="n">phrases</span><span class="o">=</span><span class="p">{}</span>
+    
+    
+    <span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">reports</span><span class="o">.</span><span class="n">documents</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;=&quot;</span><span class="o">*</span><span class="mi">40</span><span class="p">,</span> <span class="s">&quot;Processing &quot;</span><span class="p">,</span> <span class="n">document</span><span class="o">.</span><span class="n">fnm</span><span class="p">,</span> <span class="s">&quot;=&quot;</span><span class="o">*</span><span class="mi">40</span>
+        <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">document</span><span class="o">.</span><span class="n">sentences</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">sentence</span><span class="o">.</span><span class="n">text</span>
+            <span class="c"># 5.1 Calculate the score of each sentence (_sscore) and also the word score (_wscore)</span>
+            <span class="n">sentence</span><span class="o">.</span><span class="n">_sscore</span><span class="o">=</span><span class="mf">0.0</span>
+            <span class="n">sentence</span><span class="o">.</span><span class="n">_wscore</span><span class="o">=</span><span class="p">[]</span>
+            <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">sentence</span><span class="o">.</span><span class="n">cleanedWords</span><span class="p">:</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">theseus</span><span class="o">.</span><span class="n">tfpdf</span><span class="p">(</span><span class="n">word</span><span class="p">,[</span><span class="n">reports</span><span class="p">])</span>
+                <span class="n">sentence</span><span class="o">.</span><span class="n">_sscore</span><span class="o">+=</span><span class="n">value</span>
+                <span class="n">sentence</span><span class="o">.</span><span class="n">_wscore</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="c"># 5.2 Store the phrase and score</span>
+            <span class="n">phrases</span><span class="p">[</span><span class="n">sentence</span><span class="p">]</span><span class="o">=</span><span class="n">sentence</span><span class="o">.</span><span class="n">_sscore</span>
+            
+    
+    <span class="c"># 6. Generate a sorted list of Sentences</span>
+    <span class="k">print</span> <span class="s">&quot;=&quot;</span><span class="o">*</span><span class="mi">100</span>
+    <span class="n">newd</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">phrases</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">ph</span><span class="p">,</span><span class="n">sc</span> <span class="ow">in</span> <span class="n">newd</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">sc</span><span class="p">,</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="o">+</span><span class="n">ph</span><span class="o">.</span><span class="n">text</span>
+    
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Theseus v0.6.0rc documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, David Rodrigues.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

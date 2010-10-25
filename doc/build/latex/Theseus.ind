@@ -1,0 +1,64 @@
+\begin{theindex}
+\def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
+
+  \bigletter B
+  \item binary() (in module theseus), \hyperpage{4}
+
+  \indexspace
+  \bigletter C
+  \item Channel (class in theseus), \hyperpage{3}
+  \item cleanString() (in module theseus), \hyperpage{4}
+  \item cleanStringNoDel() (in module theseus), \hyperpage{4}
+  \item cleanText() (theseus.Sentence method), \hyperpage{4}
+  \item clusterHist() (in module theseus), \hyperpage{4}
+
+  \indexspace
+  \bigletter D
+  \item DocNode (class in theseus), \hyperpage{4}
+  \item Domain (class in theseus), \hyperpage{4}
+  \item dtf() (in module theseus), \hyperpage{4}
+
+  \indexspace
+  \bigletter E
+  \item eccs10bursaries (module), \hyperpage{6}
+  \item enClean() (in module theseus), \hyperpage{4}
+  \item extractPhrases() (in module theseus), \hyperpage{4}
+  \item extractSentences() (theseus.DocNode method), \hyperpage{4}
+
+  \indexspace
+  \bigletter I
+  \item idf() (in module theseus), \hyperpage{5}
+
+  \indexspace
+  \bigletter J
+  \item jaccard() (in module theseus), \hyperpage{5}
+
+  \indexspace
+  \bigletter L
+  \item logtf() (in module theseus), \hyperpage{5}
+  \item logtfidf() (in module theseus), \hyperpage{5}
+
+  \indexspace
+  \bigletter M
+  \item main() (in module eccs10bursaries), \hyperpage{6}
+
+  \indexspace
+  \bigletter N
+  \item normF() (in module theseus), \hyperpage{5}
+
+  \indexspace
+  \bigletter P
+  \item ptClean() (in module theseus), \hyperpage{5}
+
+  \indexspace
+  \bigletter S
+  \item Sentence (class in theseus), \hyperpage{4}
+
+  \indexspace
+  \bigletter T
+  \item tf() (in module theseus), \hyperpage{5}
+  \item tfidf() (in module theseus), \hyperpage{5}
+  \item tfpdf() (in module theseus), \hyperpage{5}
+  \item theseus (module), \hyperpage{3}
+
+\end{theindex}
