@@ -2,17 +2,18 @@ What is Theseus?
 ================
 *A brief overview on what Theseus is, and is not*
 
-It's a collection of scripts, programs and libraries
+Theseus is a python package that includes several modules to deal with webpage retrival and text processing.
 
-mainly consist of bash scripts + python scripts
+It is the baisis for the deployment of a system based on bash scripts and python
 
-It his the responsible for collecting and processing newspaper pages for the observatorium
+It his the responsible for collecting and processing newspaper pages for the observatorium (see details at http://theobservatorium.eu )
 
 What will Theseus be at version 1.0?
 ====================================
 
-Theseus will end up (eventually) being made of 3 groups of programs/scripts:
+Theseus will end up (eventually) being made of 4 groups of programs/modules/scripts inside the theseus package
 
 * **Crawler** (for online gathering of news items)
 * **Processor** (for processing of textual data)
 * **Utils** (acessory methods and utilities for pre and post processing)
+* **Examples** (To help users to start using **theseus**)

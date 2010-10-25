@@ -12,7 +12,7 @@ Text Files are named 01.txt ... 11.txt
 
 import sys
 import os
-import theseus
+import theseus.processor.theseus as theseus
 from operator import itemgetter
 
 def main():

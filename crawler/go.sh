@@ -5,7 +5,7 @@
 # Copyright (c) 2009 Sixhat Pirate Parts. All rights reserved.
 
 RSS=http://feeds.feedburner.com/jornalPublico
-TIMEOUT=149
+TIMEOUT=14
 
 THIS=`dirname "$0"`
 DIR=`date +%F`
@@ -22,6 +22,9 @@ mkdir -p $DIR
 # Download The Latest RSS File From The Newspaper
 wget -t 3 -q -U "$MYAGENT" $RSS -O $DIR/rss.xml
 
+# if RSS exists and was successfully downloaded... 
+if [ -f "$DIR/rss.xml" ]
+then 
 # Call a python script to do the Parsing of the RSS file and to take care of 
 # the download. Note that the Python Script calls 'wget' from inside its routine
 # with an os.system call. Also note that after each successfull wget, we pause
@@ -31,6 +34,7 @@ python getUrl.py $DIR $TIMEOUT
 
 # Let's archive the RSS file...
 mv $DIR/rss.xml $DIR/rss_$TIM.xml
+fi
 
 # Closing stuff... and possible problems
 #

@@ -2,11 +2,12 @@
 # encoding: utf-8
 """
 dnet.py
+=======
 
 a Telnet Library to Connect to Guess
 
-Created by David Rodrigues on 2010-02-17.
-Copyright (c) 2010 Sixhat Pirate Parts. All rights reserved.
+Guess is a graph exploration tool that can be found at: http://guess.wikispot.org/Front_Page
+
 """
 
 import sys

@@ -6,16 +6,15 @@ theseus.py
 
 A Python Library for text processing in The Observatorium project
 
-http://theobservatorium.eu/
+Visit http://theobservatorium.eu/ for the latest version
 
-Created by David Rodrigues on 2010-02-03.
+.. rubric:: References
+..  [Bun2006] Bun, K., & Ishizuka, M. (2006). Emerging topic tracking system in WWW. Knowledge-Based Systems, 19(3), 164-171. doi: 10.1016/j.knosys.2005.11.008.
+..  [Ishzuka2001] Ishizuka, M. (n.d.). Topic extraction from news archive using TF*PDF  algorithm. Proceedings of the Third International Conference on Web Information Systems Engineering, 2002. WISE 2002., 73-82. IEEE Comput. Sci. doi: 10.1109/WISE.2002.1181645.
+..  [Ishzuka2002] Ishizuka, M. (2001). Emerging Topic Tracking System. Proceedings Third International Workshop on Advanced Issues of E-Commerce and Web-Based Information Systems. WECWIS 2001, 2-11. IEEE Comput. Soc. doi: 10.1109/WECWIS.2001.933900
 
-Copyright (c) 2010 Sixhat Pirate Parts. All rights reserved.
 """
 from __future__ import division
-
-__author__ = 'David Rodrigues <david@sixhat.net>'
-__version__ = '0.5.2'
 
 import math
 
@@ -287,15 +286,11 @@ def binary(token, doc):
 
 def tfpdf(token, channels):
     """
-    Calculates the Term Frequency * Proportional Document Frequency (TF*PDF )
+    Calculates the Term Frequency * Proportional Document Frequency (TF*PDF ) [Bun2006]_ [Ishzuka2001]_ [Ishzuka2002]_
     
     * *token* is a string
     * *channels* is a ``list`` of ``Channel`` 
     
-.. rubric:: References
-..  [#] Bun, K., & Ishizuka, M. (2006). Emerging topic tracking system in WWW. Knowledge-Based Systems, 19(3), 164-171. doi: 10.1016/j.knosys.2005.11.008.
-..  [#] Ishizuka, M. (n.d.). Topic extraction from news archive using TF*PDF  algorithm. Proceedings of the Third International Conference on Web Information Systems Engineering, 2002. WISE 2002., 73-82. IEEE Comput. Sci. doi: 10.1109/WISE.2002.1181645.
-..  [#] Ishizuka, M. (2001). Emerging Topic Tracking System. Proceedings Third International Workshop on Advanced Issues of E-Commerce and Web-Based Information Systems. WECWIS 2001, 2-11. IEEE Comput. Soc. doi: 10.1109/WECWIS.2001.933900
     """
     wj=0.0
     
@@ -312,7 +307,7 @@ def normF(token, channel):
     """
     Calculates the normalized frequency of a term in a channel of documents
     
-    see :py:meth:`theseus.tfpdf`
+    see :py:meth:`tfpdf`
     """
     words=[]
     dom=Domain(channel.label)
@@ -350,6 +345,8 @@ def clusterHist(clst):
 def enClean():
     """
     English Stop Words
+    
+    
     """
     return ['a','able','about','across','after','all','almost','also','am','among','an','and','any','are','as','at','be','because','been','but','by','can','cannot','could','dear','did','do','does','either','else','ever','every','for','from','get','got','had','has','have','he','her','hers','him','his','how','however','i','if','in','into','is','it','its','just','least','let','like','likely','may','me','might','most','must','my','neither','no','nor','not','of','off','often','on','only','or','other','our','own','rather','said','say','says','she','should','since','so','some','than','that','the','their','them','then','there','these','they','this','tis','to','too','twas','us','wants','was','we','were','what','when','where','which','while','who','whom','why','will','with','would','yet','you','your']
 
@@ -367,3 +364,19 @@ def ptClean():
     out.extend(artigos)
     out.extend(outros)
     return out
+
+def esClean():
+    """
+    Spanish Stop Words
+    
+    obtained from http://www.ranks.nl/stopwords/spanish.html
+    """
+    return [u'un', u'una', u'unas', u'unos', u'uno', u'sobre', u'todo', u'también', u'tras', u'otro', u'algún', u'alguno', u'alguna', u'algunos', u'algunas', u'ser', u'es', u'soy', u'eres', u'somos', u'sois', u'estoy', u'esta', u'estamos', u'estais', u'estan', u'como', u'en', u'para', u'atras', u'porque', u'por qué', u'estado', u'estaba', u'ante', u'antes', u'siendo', u'ambos', u'pero', u'por', u'poder', u'puede', u'puedo', u'podemos', u'podeis', u'pueden', u'fui', u'fue', u'fuimos', u'fueron', u'hacer', u'hago', u'hace', u'hacemos', u'haceis', u'hacen', u'cada', u'fin', u'incluso', u'primero 	desde', u'conseguir', u'consigo', u'consigue', u'consigues', u'conseguimos', u'consiguen', u'ir', u'voy', u'va', u'vamos', u'vais', u'van', u'vaya', u'gueno', u'ha', u'tener', u'tengo', u'tiene', u'tenemos', u'teneis', u'tienen', u'el', u'la', u'lo', u'las', u'los', u'su', u'aqui', u'mio', u'tuyo', u'ellos', u'ellas', u'nos', u'nosotros', u'vosotros', u'vosotras', u'si', u'dentro', u'solo', u'solamente', u'saber', u'sabes', u'sabe', u'sabemos', u'sabeis', u'saben', u'ultimo', u'largo', u'bastante', u'haces', u'muchos', u'aquellos', u'aquellas', u'sus', u'entonces', u'tiempo', u'verdad', u'verdadero', u'verdadera 	cierto', u'ciertos', u'cierta', u'ciertas', u'intentar', u'intento', u'intenta', u'intentas', u'intentamos', u'intentais', u'intentan', u'dos', u'bajo', u'arriba', u'encima', u'usar', u'uso', u'usas', u'usa', u'usamos', u'usais', u'usan', u'emplear', u'empleo', u'empleas', u'emplean', u'ampleamos', u'empleais', u'valor', u'muy', u'era', u'eras', u'eramos', u'eran', u'modo', u'bien', u'cual', u'cuando', u'donde', u'mientras', u'quien', u'con', u'entre', u'sin', u'trabajo', u'trabajar', u'trabajas', u'trabaja', u'trabajamos', u'trabajais', u'trabajan', u'podria', u'podrias', u'podriamos', u'podrian', u'podriais', u'yo', u'aquel']
+    
+def frClean():
+    """
+    Frenc Stop Words
+    
+    obtained from http://www.ranks.nl/stopwords/french.html
+    """
+    return [u'alors', u'au',  u'aucuns',  u'aussi',  u'autre',  u'avant',  u'avec',  u'avoir',  u'bon',  u'car',  u'ce',  u'cela',  u'ces',  u'ceux',  u'chaque',  u'ci',  u'comme',  u'comment',  u'dans',  u'des',  u'du',  u'dedans',  u'dehors',  u'depuis',  u'deux',  u'devrait',  u'doit',  u'donc',  u'dos',  u'droite',  u'début',  u'elle',  u'elles',  u'en',  u'encore',  u'essai',  u'est',  u'et',  u'eu',  u'fait',  u'faites',  u'fois',  u'font',  u'force',  u'haut',  u'hors',  u'ici',  u'il',  u'ils',  u'je 	juste',  u'la',  u'le',  u'les',  u'leur',  u'là',  u'ma',  u'maintenant',  u'mais',  u'mes',  u'mine',  u'moins',  u'mon',  u'mot',  u'même',  u'ni',  u'nommés',  u'notre',  u'nous',  u'nouveaux',  u'ou',  u'où',  u'par',  u'parce',  u'parole',  u'pas',  u'personnes',  u'peut',  u'peu',  u'pièce',  u'plupart',  u'pour',  u'pourquoi',  u'quand',  u'que',  u'quel',  u'quelle',  u'quelles',  u'quels',  u'qui',  u'sa',  u'sans',  u'ses',  u'seulement',  u'si',  u'sien',  u'son',  u'sont',  u'sous',  u'soyez 	sujet',  u'sur',  u'ta',  u'tandis',  u'tellement',  u'tels',  u'tes',  u'ton',  u'tous',  u'tout',  u'trop',  u'très',  u'tu',  u'valeur',  u'voie',  u'voient',  u'vont',  u'votre',  u'vous',  u'vu',  u'ça',  u'étaient',  u'état',  u'étions',  u'été',  u'être']

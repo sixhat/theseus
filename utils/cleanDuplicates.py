@@ -2,33 +2,20 @@
 # encoding: utf-8
 """
 cleanDuplicates.py
+==================
 
 Clean files with the same contents from a folder, keeping the oldest one.
 
-usage:
-        $ python cleanDuplicates.py DIR_TO_CLEAN
+usage: ``$ python cleanDuplicates.py DIR_TO_CLEAN``
 
-Created by David Rodrigues on 2010-02-22.
-Copyright (c) 2010 Sixhat Pirate Parts. All rights reserved.
 """
 
 import sys
 import os
 
-class DocNode:
-    """docstring for DocNode"""
-    idn=0
-    txt=''
-    fnm=''
-    ttl=0
-    def __init__(self, idn, fnm, txt, ttl):
-        self.idn=idn
-        self.fnm=fnm
-        self.txt=txt
-        self.ttl=ttl
-
 def main():
-    """docstring for main"""
+    """ receives as argument the dir to clean
+    """
     global indir
     
     files=[]

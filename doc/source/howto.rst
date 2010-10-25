@@ -5,5 +5,5 @@ How to
 Process 11 TXT files inside a "TXT" folder
 ------------------------------------------
 
-.. automodule:: eccs10bursaries
+.. automodule:: theseus.examples.eccs10bursaries
     :members:

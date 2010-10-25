@@ -12,8 +12,8 @@
 
 
 \title{Theseus Documentation}
-\date{October 21, 2010}
-\release{0.6.0rc}
+\date{October 25, 2010}
+\release{0.7}
 \author{David Rodrigues}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -109,9 +109,9 @@
 \phantomsection\label{index::doc}
 
 
-Latest release: 0.6.0rc
+Latest release: 0.7
 
-Latest update: October 21, 2010
+Latest update: October 25, 2010
 
 
 \chapter{Contents}
@@ -121,16 +121,16 @@ Latest update: October 21, 2010
 \label{whatis:what-is-theseus}\label{whatis::doc}
 \emph{A brief overview on what Theseus is, and is not}
 
-It's a collection of scripts, programs and libraries
+Theseus is a python package that includes several modules to deal with webpage retrival and text processing.
 
-mainly consist of bash scripts + python scripts
+It is the baisis for the deployment of a system based on bash scripts and python
 
-It his the responsible for collecting and processing newspaper pages for the observatorium
+It his the responsible for collecting and processing newspaper pages for the observatorium (see details at \href{http://theobservatorium.eu}{http://theobservatorium.eu} )
 
 
 \section{What will Theseus be at version 1.0?}
 \label{whatis:what-will-theseus-be-at-version-1-0}
-Theseus will end up (eventually) being made of 3 groups of programs/scripts:
+Theseus will end up (eventually) being made of 4 groups of programs/modules/scripts inside the theseus package
 \begin{itemize}
 \item {} 
 \textbf{Crawler} (for online gathering of news items)
@@ -141,31 +141,46 @@ Theseus will end up (eventually) being made of 3 groups of programs/scripts:
 \item {} 
 \textbf{Utils} (acessory methods and utilities for pre and post processing)
 
+\item {} 
+\textbf{Examples} (To help users to start using \textbf{theseus})
+
 \end{itemize}
 
 
 \section{Theseus now!}
 \label{theseus:theseus-now}\label{theseus::doc}
-The Theseus Project is a collection of several scripts that help the scientist to manipulate text documents in manner to extract useful information.
+Theseus is a package of several python modules including:
+\begin{itemize}
+\item {} 
+processor
+
+\item {} 
+crawler
+
+\item {} 
+utils
+
+\item {} 
+examples
+
+\end{itemize}
 
 Theseus is part of \href{http://theobservatorium.eu}{http://theobservatorium.eu} project.
 
-\textbf{This is the main module for data processing. It's where several classes that old the data are defined.}
-\phantomsection\label{theseus:module-theseus}\index{theseus (module)}
 
-\subsection{theseus.py}
+\subsection{theseus.processor}
+\label{theseus:theseus-processor}\label{theseus:module-theseus.processor.theseus}\index{theseus.processor.theseus (module)}
+
+\subsubsection{theseus.py}
 \label{theseus:theseus-py}
 A Python Library for text processing in The Observatorium project
 
-\href{http://theobservatorium.eu/}{http://theobservatorium.eu/}
-
-Created by David Rodrigues on 2010-02-03.
-
-Copyright (c) 2010 Sixhat Pirate Parts. All rights reserved.
-\index{Channel (class in theseus)}
+Visit \href{http://theobservatorium.eu/}{http://theobservatorium.eu/} for the latest version
+\paragraph{References}
+\index{Channel (class in theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.Channel}\pysiglinewithargsret{\strong{class }\code{theseus.}\bfcode{Channel}}{\emph{label}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.Channel}\pysiglinewithargsret{\strong{class }\code{theseus.processor.theseus.}\bfcode{Channel}}{\emph{label}}{}
 A Channel contains all documents of a certain channel
 \begin{itemize}
 \item {} 
@@ -178,10 +193,10 @@ A Channel contains all documents of a certain channel
 
 \end{fulllineitems}
 
-\index{DocNode (class in theseus)}
+\index{DocNode (class in theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.DocNode}\pysiglinewithargsret{\strong{class }\code{theseus.}\bfcode{DocNode}}{\emph{idn='`}, \emph{fnm='`}, \emph{txt='`}, \emph{ttl='`}, \emph{lang='en'}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.DocNode}\pysiglinewithargsret{\strong{class }\code{theseus.processor.theseus.}\bfcode{DocNode}}{\emph{idn='`}, \emph{fnm='`}, \emph{txt='`}, \emph{ttl='`}, \emph{lang='en'}}{}
 The DocNode is the basic structue that olds each document in a corpus
 \begin{itemize}
 \item {} 
@@ -200,10 +215,10 @@ The DocNode is the basic structue that olds each document in a corpus
 \emph{lang='en'} The language of the text, defaults to english
 
 \end{itemize}
-\index{extractSentences() (theseus.DocNode method)}
+\index{extractSentences() (theseus.processor.theseus.DocNode method)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.DocNode.extractSentences}\pysiglinewithargsret{\bfcode{extractSentences}}{}{}
+\phantomsection\label{theseus:theseus.processor.theseus.DocNode.extractSentences}\pysiglinewithargsret{\bfcode{extractSentences}}{}{}
 Extract all the sentences of the document
 
 \end{fulllineitems}
@@ -211,25 +226,25 @@ Extract all the sentences of the document
 
 \end{fulllineitems}
 
-\index{Domain (class in theseus)}
+\index{Domain (class in theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.Domain}\pysiglinewithargsret{\strong{class }\code{theseus.}\bfcode{Domain}}{\emph{label}, \emph{words=}\optional{}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.Domain}\pysiglinewithargsret{\strong{class }\code{theseus.processor.theseus.}\bfcode{Domain}}{\emph{label}, \emph{words=}\optional{}}{}
 A Domain is a field with a collection of words and a label
 
 Domain words should all be lower capital and without stopwords!
 
 \end{fulllineitems}
 
-\index{Sentence (class in theseus)}
+\index{Sentence (class in theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.Sentence}\pysiglinewithargsret{\strong{class }\code{theseus.}\bfcode{Sentence}}{\emph{text}, \emph{lang='en'}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.Sentence}\pysiglinewithargsret{\strong{class }\code{theseus.processor.theseus.}\bfcode{Sentence}}{\emph{text}, \emph{lang='en'}}{}
 The Sentence is one of the building blocks of Documents
-\index{cleanText() (theseus.Sentence method)}
+\index{cleanText() (theseus.processor.theseus.Sentence method)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.Sentence.cleanText}\pysiglinewithargsret{\bfcode{cleanText}}{}{}~\begin{description}
+\phantomsection\label{theseus:theseus.processor.theseus.Sentence.cleanText}\pysiglinewithargsret{\bfcode{cleanText}}{}{}~\begin{description}
 \item[{Processes the raw text of a sentence:}] \leavevmode\begin{itemize}
 \item {} 
 creates a \code{cleaned} text without unauthorized letters,
@@ -249,10 +264,10 @@ creates a \code{cleanedWords} list without \textbf{stopwords}
 
 \end{fulllineitems}
 
-\index{binary() (in module theseus)}
+\index{binary() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.binary}\pysiglinewithargsret{\code{theseus.}\bfcode{binary}}{\emph{token}, \emph{doc}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.binary}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{binary}}{\emph{token}, \emph{doc}}{}
 Calculates the Binary existence of a token in a document (doc)
 
 returns 1 if token exists, 0 otherwise
@@ -267,34 +282,34 @@ returns 1 if token exists, 0 otherwise
 
 \end{fulllineitems}
 
-\index{cleanString() (in module theseus)}
+\index{cleanString() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.cleanString}\pysiglinewithargsret{\code{theseus.}\bfcode{cleanString}}{\emph{s1}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.cleanString}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{cleanString}}{\emph{s1}}{}
 Cleans strings from unauthorized letters
 
 \end{fulllineitems}
 
-\index{cleanStringNoDel() (in module theseus)}
+\index{cleanStringNoDel() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.cleanStringNoDel}\pysiglinewithargsret{\code{theseus.}\bfcode{cleanStringNoDel}}{\emph{s1}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.cleanStringNoDel}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{cleanStringNoDel}}{\emph{s1}}{}
 Cleans strings from unauthorized letters
 
 \end{fulllineitems}
 
-\index{clusterHist() (in module theseus)}
+\index{clusterHist() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.clusterHist}\pysiglinewithargsret{\code{theseus.}\bfcode{clusterHist}}{\emph{clst}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.clusterHist}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{clusterHist}}{\emph{clst}}{}
 Takes a List of DocNodes and returns an histogram of the most common words
 
 \end{fulllineitems}
 
-\index{dtf() (in module theseus)}
+\index{dtf() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.dtf}\pysiglinewithargsret{\code{theseus.}\bfcode{dtf}}{\emph{token}, \emph{corpus}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.dtf}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{dtf}}{\emph{token}, \emph{corpus}}{}
 Calculates the fraction of documents of the corpus that have a token
 \begin{itemize}
 \item {} 
@@ -307,28 +322,48 @@ Calculates the fraction of documents of the corpus that have a token
 
 \end{fulllineitems}
 
-\index{enClean() (in module theseus)}
+\index{enClean() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.enClean}\pysiglinewithargsret{\code{theseus.}\bfcode{enClean}}{}{}
+\phantomsection\label{theseus:theseus.processor.theseus.enClean}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{enClean}}{}{}
 English Stop Words
 
 \end{fulllineitems}
 
-\index{extractPhrases() (in module theseus)}
+\index{esClean() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.extractPhrases}\pysiglinewithargsret{\code{theseus.}\bfcode{extractPhrases}}{\emph{s1}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.esClean}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{esClean}}{}{}
+Spanish Stop Words
+
+obtained from \href{http://www.ranks.nl/stopwords/spanish.html}{http://www.ranks.nl/stopwords/spanish.html}
+
+\end{fulllineitems}
+
+\index{extractPhrases() (in module theseus.processor.theseus)}
+
+\begin{fulllineitems}
+\phantomsection\label{theseus:theseus.processor.theseus.extractPhrases}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{extractPhrases}}{\emph{s1}}{}
 extractPhrases breaks a document into a sequence of phrases.
 
 XXX: We need to deal with numbers...
 
 \end{fulllineitems}
 
-\index{idf() (in module theseus)}
+\index{frClean() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.idf}\pysiglinewithargsret{\code{theseus.}\bfcode{idf}}{\emph{token}, \emph{corpus}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.frClean}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{frClean}}{}{}
+Frenc Stop Words
+
+obtained from \href{http://www.ranks.nl/stopwords/french.html}{http://www.ranks.nl/stopwords/french.html}
+
+\end{fulllineitems}
+
+\index{idf() (in module theseus.processor.theseus)}
+
+\begin{fulllineitems}
+\phantomsection\label{theseus:theseus.processor.theseus.idf}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{idf}}{\emph{token}, \emph{corpus}}{}
 Calculates the inverse document frequency of a token
 \begin{itemize}
 \item {} 
@@ -341,18 +376,18 @@ Calculates the inverse document frequency of a token
 
 \end{fulllineitems}
 
-\index{jaccard() (in module theseus)}
+\index{jaccard() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.jaccard}\pysiglinewithargsret{\code{theseus.}\bfcode{jaccard}}{\emph{s1}, \emph{s2}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.jaccard}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{jaccard}}{\emph{s1}, \emph{s2}}{}
 Calculates de jaccard index for two lists
 
 \end{fulllineitems}
 
-\index{logtf() (in module theseus)}
+\index{logtf() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.logtf}\pysiglinewithargsret{\code{theseus.}\bfcode{logtf}}{\emph{token}, \emph{doc}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.logtf}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{logtf}}{\emph{token}, \emph{doc}}{}
 Calculates the Log Term Frequency in a certain document (doc)
 \begin{itemize}
 \item {} 
@@ -365,10 +400,10 @@ Calculates the Log Term Frequency in a certain document (doc)
 
 \end{fulllineitems}
 
-\index{logtfidf() (in module theseus)}
+\index{logtfidf() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.logtfidf}\pysiglinewithargsret{\code{theseus.}\bfcode{logtfidf}}{\emph{token}, \emph{doc}, \emph{corpus}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.logtfidf}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{logtfidf}}{\emph{token}, \emph{doc}, \emph{corpus}}{}
 Calculates the Log Term Frequency-Inverse Document Frequency of a token
 \begin{itemize}
 \item {} 
@@ -384,28 +419,28 @@ Calculates the Log Term Frequency-Inverse Document Frequency of a token
 
 \end{fulllineitems}
 
-\index{normF() (in module theseus)}
+\index{normF() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.normF}\pysiglinewithargsret{\code{theseus.}\bfcode{normF}}{\emph{token}, \emph{channel}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.normF}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{normF}}{\emph{token}, \emph{channel}}{}
 Calculates the normalized frequency of a term in a channel of documents
 
-see {\hyperref[theseus:theseus.tfpdf]{\code{theseus.tfpdf()}}}
+see {\hyperref[theseus:theseus.processor.theseus.tfpdf]{\code{tfpdf()}}}
 
 \end{fulllineitems}
 
-\index{ptClean() (in module theseus)}
+\index{ptClean() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.ptClean}\pysiglinewithargsret{\code{theseus.}\bfcode{ptClean}}{}{}
+\phantomsection\label{theseus:theseus.processor.theseus.ptClean}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{ptClean}}{}{}
 Portuguese Stop Words
 
 \end{fulllineitems}
 
-\index{tf() (in module theseus)}
+\index{tf() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.tf}\pysiglinewithargsret{\code{theseus.}\bfcode{tf}}{\emph{token}, \emph{doc}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.tf}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{tf}}{\emph{token}, \emph{doc}}{}
 Calculates the term frequency in a certain document (doc)
 \begin{itemize}
 \item {} 
@@ -418,10 +453,10 @@ Calculates the term frequency in a certain document (doc)
 
 \end{fulllineitems}
 
-\index{tfidf() (in module theseus)}
+\index{tfidf() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.tfidf}\pysiglinewithargsret{\code{theseus.}\bfcode{tfidf}}{\emph{token}, \emph{doc}, \emph{corpus}}{}
+\phantomsection\label{theseus:theseus.processor.theseus.tfidf}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{tfidf}}{\emph{token}, \emph{doc}, \emph{corpus}}{}
 Calculates the Term Frequency-Inverse Document Frequency of a token
 \begin{itemize}
 \item {} 
@@ -437,12 +472,11 @@ Calculates the Term Frequency-Inverse Document Frequency of a token
 
 \end{fulllineitems}
 
-\index{tfpdf() (in module theseus)}
+\index{tfpdf() (in module theseus.processor.theseus)}
 
 \begin{fulllineitems}
-\phantomsection\label{theseus:theseus.tfpdf}\pysiglinewithargsret{\code{theseus.}\bfcode{tfpdf}}{\emph{token}, \emph{channels}}{}~\begin{quote}
-
-Calculates the Term Frequency * Proportional Document Frequency (TF*PDF )
+\phantomsection\label{theseus:theseus.processor.theseus.tfpdf}\pysiglinewithargsret{\code{theseus.processor.theseus.}\bfcode{tfpdf}}{\emph{token}, \emph{channels}}{}
+Calculates the Term Frequency * Proportional Document Frequency (TF*PDF ) {\hyperref[theseus:bun2006]{{[}Bun2006{]}}} {\hyperref[theseus:ishzuka2001]{{[}Ishzuka2001{]}}} {\hyperref[theseus:ishzuka2002]{{[}Ishzuka2002{]}}}
 \begin{itemize}
 \item {} 
 \emph{token} is a string
@@ -451,19 +485,149 @@ Calculates the Term Frequency * Proportional Document Frequency (TF*PDF )
 \emph{channels} is a \code{list} of \code{Channel}
 
 \end{itemize}
-\end{quote}
+
+\end{fulllineitems}
+
+\phantomsection\label{theseus:module-theseus.processor.text2tag}\index{theseus.processor.text2tag (module)}
+
+\subsubsection{text2tag.py}
+\label{theseus:text2tag-py}
+Converts HTML files to TXT according to the Text to Tag ratio proposed by {\hyperref[theseus:weninger2008]{{[}Weninger2008{]}}}
+
+Usage:
+\code{\$ python text2tag.py \textless{}inputfile\textgreater{} \textless{}smooth-radius\textgreater{}}
 \paragraph{References}
+\index{MyStripper (class in theseus.processor.text2tag)}
+
+\begin{fulllineitems}
+\phantomsection\label{theseus:theseus.processor.text2tag.MyStripper}\pysigline{\strong{class }\code{theseus.processor.text2tag.}\bfcode{MyStripper}}{}
+docstring for MyStripper
+\index{handle\_data() (theseus.processor.text2tag.MyStripper method)}
+
+\begin{fulllineitems}
+\phantomsection\label{theseus:theseus.processor.text2tag.MyStripper.handle_data}\pysiglinewithargsret{\bfcode{handle\_data}}{\emph{d}}{}
+docstring for handle\_data
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{process() (in module theseus.processor.text2tag)}
+
+\begin{fulllineitems}
+\phantomsection\label{theseus:theseus.processor.text2tag.process}\pysiglinewithargsret{\code{theseus.processor.text2tag.}\bfcode{process}}{\emph{infile}}{}
+Process the html infile
+
+\end{fulllineitems}
+
+\index{rm\_blank\_lines() (in module theseus.processor.text2tag)}
+
+\begin{fulllineitems}
+\phantomsection\label{theseus:theseus.processor.text2tag.rm_blank_lines}\pysiglinewithargsret{\code{theseus.processor.text2tag.}\bfcode{rm\_blank\_lines}}{\emph{string}}{}
+removes blank lines from a string
+
+\end{fulllineitems}
+
+\index{rm\_head() (in module theseus.processor.text2tag)}
+
+\begin{fulllineitems}
+\phantomsection\label{theseus:theseus.processor.text2tag.rm_head}\pysiglinewithargsret{\code{theseus.processor.text2tag.}\bfcode{rm\_head}}{\emph{string}}{}
+rm\_head: Removes everything in the \textless{}head\textgreater{}\textless{}/head\textgreater{} of the document
+
+\end{fulllineitems}
+
+\index{rm\_scripts() (in module theseus.processor.text2tag)}
+
+\begin{fulllineitems}
+\phantomsection\label{theseus:theseus.processor.text2tag.rm_scripts}\pysiglinewithargsret{\code{theseus.processor.text2tag.}\bfcode{rm\_scripts}}{\emph{string}}{}
+rm\_scripts: Removes \textless{}scripts\textgreater{} and Comments \textless{}!-- --\textgreater{} from html files
+
+\end{fulllineitems}
+
+\index{rm\_tags() (in module theseus.processor.text2tag)}
+
+\begin{fulllineitems}
+\phantomsection\label{theseus:theseus.processor.text2tag.rm_tags}\pysiglinewithargsret{\code{theseus.processor.text2tag.}\bfcode{rm\_tags}}{\emph{string}}{}
+rm\_tags: Removes HTML Tags from string
 
 \end{fulllineitems}
 
 
 
-\subsection{crawler.py (will available in v.0.7)}
-\label{theseus:crawler-py-will-available-in-v-0-7}
+\subsection{theseus.crawler}
+\label{theseus:theseus-crawler}\label{theseus:module-theseus.crawler.getUrl}\index{theseus.crawler.getUrl (module)}
 
-\subsection{utils.py (will available in v.0.8)}
-\label{theseus:utils-py-will-available-in-v-0-8}
+\subsubsection{getUrl.py}
+\label{theseus:geturl-py}
+Parses a downloaded RSS file and downloads all items in the Feed
+\index{main() (in module theseus.crawler.getUrl)}
+
+\begin{fulllineitems}
+\phantomsection\label{theseus:theseus.crawler.getUrl.main}\pysiglinewithargsret{\code{theseus.crawler.getUrl.}\bfcode{main}}{}{}
+This module receives as argument the folder where the rss.xml file is stored
+
+\end{fulllineitems}
+
+
+
+\subsection{theseus.utils}
+\label{theseus:module-theseus.utils.dnet}\label{theseus:theseus-utils}\index{theseus.utils.dnet (module)}
+
+\subsubsection{dnet.py}
+\label{theseus:dnet-py}
+a Telnet Library to Connect to Guess
+
+Guess is a graph exploration tool that can be found at: \href{http://guess.wikispot.org/Front\_Page}{http://guess.wikispot.org/Front\_Page}
+\index{Dnet (class in theseus.utils.dnet)}
+
+\begin{fulllineitems}
+\phantomsection\label{theseus:theseus.utils.dnet.Dnet}\pysiglinewithargsret{\strong{class }\code{theseus.utils.dnet.}\bfcode{Dnet}}{\emph{gr}}{}
+Constructor for a telnet library to connect to Guess
+See Guess - \href{http://graphexploration.cond.org/}{http://graphexploration.cond.org/}
+\index{send() (theseus.utils.dnet.Dnet method)}
+
+\begin{fulllineitems}
+\phantomsection\label{theseus:theseus.utils.dnet.Dnet.send}\pysiglinewithargsret{\bfcode{send}}{\emph{cmd}}{}
+Send a message to Guess via telnet.
+Guess - \href{http://graphexploration.cond.org/}{http://graphexploration.cond.org/}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\phantomsection\label{theseus:module-theseus.utils.cleanDuplicates}\index{theseus.utils.cleanDuplicates (module)}
+
+\subsubsection{cleanDuplicates.py}
+\label{theseus:cleanduplicates-py}
+Clean files with the same contents from a folder, keeping the oldest one.
+
+usage: \code{\$ python cleanDuplicates.py DIR\_TO\_CLEAN}
+\index{main() (in module theseus.utils.cleanDuplicates)}
+
+\begin{fulllineitems}
+\phantomsection\label{theseus:theseus.utils.cleanDuplicates.main}\pysiglinewithargsret{\code{theseus.utils.cleanDuplicates.}\bfcode{main}}{}{}
+receives as argument the dir to clean
+
+\end{fulllineitems}
+
+
+
+\subsection{theseus.examples}
+\label{theseus:theseus-examples}\label{theseus:module-theseus.examples}\index{theseus.examples (module)}
 See {\hyperref[TODO::doc]{\emph{Roadmap}}} for details
+
+
+\section{Download Theseus}
+\label{download::doc}\label{download:download-theseus}
+
+\subsection{Version 0.7}
+\label{download:version-0-7}\begin{itemize}
+\item {} 
+theseus-0.7 \href{http://theobservatorium.eu/zips/theseus-0.7.zip}{http://theobservatorium.eu/zips/theseus-0.7.zip}
+
+\end{itemize}
 
 
 \section{How to}
@@ -472,7 +636,7 @@ See {\hyperref[TODO::doc]{\emph{Roadmap}}} for details
 
 
 \subsection{Process 11 TXT files inside a ``TXT'' folder}
-\label{howto:module-eccs10bursaries}\label{howto:process-11-txt-files-inside-a-txt-folder}\index{eccs10bursaries (module)}
+\label{howto:module-theseus.examples.eccs10bursaries}\label{howto:process-11-txt-files-inside-a-txt-folder}\index{theseus.examples.eccs10bursaries (module)}
 
 \subsubsection{eccs10bursaries.py}
 \label{howto:eccs10bursaries-py}
@@ -480,10 +644,10 @@ This example will demonstrate the use of Theseus to process a set of texts
 that are archived in a folder ./TXT
 
 Text Files are named 01.txt ... 11.txt
-\index{main() (in module eccs10bursaries)}
+\index{main() (in module theseus.examples.eccs10bursaries)}
 
 \begin{fulllineitems}
-\phantomsection\label{howto:eccs10bursaries.main}\pysiglinewithargsret{\code{eccs10bursaries.}\bfcode{main}}{}{}
+\phantomsection\label{howto:theseus.examples.eccs10bursaries.main}\pysiglinewithargsret{\code{theseus.examples.eccs10bursaries.}\bfcode{main}}{}{}
 This example will demonstrate the use of Theseus to process a set of texts
 that are archived in a folder ./TXT
 
@@ -513,7 +677,7 @@ David Rodrigues email is \href{mailto:m4467@iscte.pt}{m4467@iscte.pt}
 \subsection{0.8}
 \label{TODO:id1}\begin{itemize}
 \item {} 
-add \code{utils.py} and collect some dispersed scripts into this package.
+add \code{utils.py} and collect some dispersed scripts into this package. \textbf{{[}Done{]}}
 
 \item {} \begin{description}
 \item[{solve abrveviation problems in the identification of phrases}] \leavevmode
@@ -527,30 +691,30 @@ This things have to be processed at the Document level before breaking the Docum
 \end{itemize}
 
 
-\subsection{0.7}
-\label{TODO:id2}\begin{itemize}
+\subsection{0.7 \textbf{Present Version}}
+\label{TODO:present-version}\begin{itemize}
 \item {} 
-add \code{fr} stop words
+add \code{fr} stop words \textbf{{[}Done{]}}
 
 \item {} 
-add \code{es} stop words
+add \code{es} stop words \textbf{{[}Done{]}}
 
 \item {} 
-rename \textbf{theseus} module to \textbf{processor} and incorporate \code{crawler.py} code into \emph{Theseus} as \textbf{crawler} module
+rename \textbf{theseus} module to \textbf{processor} and incorporate \code{crawler.py} code into \emph{Theseus} as \textbf{crawler} module \textbf{{[}Done{]}}
 
 \item {} 
-\textbf{Documentation} Write what is Thesues section of this documentation.
+\textbf{Documentation} Write what is Thesues section of this documentation. \textbf{{[}Done{]}}
 
 \end{itemize}
 
 
-\subsection{0.6 \textbf{Present Version}}
-\label{TODO:present-version}\begin{itemize}
+\subsection{0.6}
+\label{TODO:id2}\begin{itemize}
 \item {} 
-implement {\hyperref[theseus:theseus.tfpdf]{\code{theseus.tfpdf()}}} method \textbf{{[}Done{]}}
+implement \code{theseus.tfpdf()} method \textbf{{[}Done{]}}
 
 \item {} 
-test {\hyperref[theseus:theseus.tfpdf]{\code{theseus.tfpdf()}}} with text from ECCS`10 Bursaries \textbf{{[}Done{]}}
+test \code{theseus.tfpdf()} with text from ECCS`10 Bursaries \textbf{{[}Done{]}}
 
 \item {} 
 \textbf{Documentation} Write the ECCS`10 Bursaries text as an example of usage. \textbf{{[}Done{]}}
@@ -574,15 +738,33 @@ test {\hyperref[theseus:theseus.tfpdf]{\code{theseus.tfpdf()}}} with text from E
 
 \end{itemize}
 
+\begin{thebibliography}{Weninger2008}
+\bibitem[Bun2006]{Bun2006}{\phantomsection\label{theseus:bun2006} 
+Bun, K., \& Ishizuka, M. (2006). Emerging topic tracking system in WWW. Knowledge-Based Systems, 19(3), 164-171. doi: 10.1016/j.knosys.2005.11.008.
+}
+\bibitem[Ishzuka2001]{Ishzuka2001}{\phantomsection\label{theseus:ishzuka2001} 
+Ishizuka, M. (n.d.). Topic extraction from news archive using TF*PDF  algorithm. Proceedings of the Third International Conference on Web Information Systems Engineering, 2002. WISE 2002., 73-82. IEEE Comput. Sci. doi: 10.1109/WISE.2002.1181645.
+}
+\bibitem[Ishzuka2002]{Ishzuka2002}{\phantomsection\label{theseus:ishzuka2002} 
+Ishizuka, M. (2001). Emerging Topic Tracking System. Proceedings Third International Workshop on Advanced Issues of E-Commerce and Web-Based Information Systems. WECWIS 2001, 2-11. IEEE Comput. Soc. doi: 10.1109/WECWIS.2001.933900
+}
+\bibitem[Weninger2008]{Weninger2008}{\phantomsection\label{theseus:weninger2008} 
+Weninger, T., \& Hsu, W. H. (2008). Text Extraction from the Web via Text-to-Tag Ratio. 2008 19th International Conference on Database and Expert Systems Applications, 23-28. Ieee. doi: 10.1109/DEXA.2008.12.
+}
+\end{thebibliography}
+
 
 \renewcommand{\indexname}{Python Module Index}
 \begin{theindex}
 \def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
-\bigletter{e}
-\item {\texttt{eccs10bursaries}}, \pageref{howto:module-eccs10bursaries}
-\indexspace
 \bigletter{t}
-\item {\texttt{theseus}}, \pageref{theseus:module-theseus}
+\item {\texttt{theseus.crawler.getUrl}}, \pageref{theseus:module-theseus.crawler.getUrl}
+\item {\texttt{theseus.examples}}, \pageref{theseus:module-theseus.examples}
+\item {\texttt{theseus.examples.eccs10bursaries}}, \pageref{howto:module-theseus.examples.eccs10bursaries}
+\item {\texttt{theseus.processor.text2tag}}, \pageref{theseus:module-theseus.processor.text2tag}
+\item {\texttt{theseus.processor.theseus}}, \pageref{theseus:module-theseus.processor.theseus}
+\item {\texttt{theseus.utils.cleanDuplicates}}, \pageref{theseus:module-theseus.utils.cleanDuplicates}
+\item {\texttt{theseus.utils.dnet}}, \pageref{theseus:module-theseus.utils.dnet}
 \end{theindex}
 
 \renewcommand{\indexname}{Index}

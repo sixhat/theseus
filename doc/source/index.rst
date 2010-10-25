@@ -19,6 +19,7 @@ Contents
 
    whatis
    theseus
+   download
    howto
    faq
    contact

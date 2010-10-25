@@ -2,13 +2,17 @@
 # encoding: utf-8
 """
 text2tag.py
-version: 0.1
+===========
 
-Created by David Rodrigues on 2010-02-09.
-Copyright (c) 2010 Sixhat Pirate Parts. All rights reserved.
+Converts HTML files to TXT according to the Text to Tag ratio proposed by [Weninger2008]_
 
 Usage:
-$ python text2tag.py <inputfile> <smooth-radius>
+``$ python text2tag.py <inputfile> <smooth-radius>``
+
+.. rubric:: References
+..  [Weninger2008] Weninger, T., & Hsu, W. H. (2008). Text Extraction from the Web via Text-to-Tag Ratio. 2008 19th International Conference on Database and Expert Systems Applications, 23-28. Ieee. doi: 10.1109/DEXA.2008.12.
+
+
 """
 
 import sys
@@ -17,7 +21,7 @@ import subprocess
 import re
 import HTMLParser
 import numpy
-from scipy import stats
+#from scipy import stats
 
 # Global Parameters
 infile=''

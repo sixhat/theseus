@@ -1,20 +1,45 @@
 Theseus now!
 ============
 
-The Theseus Project is a collection of several scripts that help the scientist to manipulate text documents in manner to extract useful information.
+Theseus is a package of several python modules including:
+
+ * processor
+ * crawler
+ * utils
+ * examples
+ 
 
 Theseus is part of http://theobservatorium.eu project.
 
-**This is the main module for data processing. It's where several classes that old the data are defined.**
+theseus.processor
+-----------------
 
-
-.. automodule:: theseus
+.. automodule:: theseus.processor.theseus
     :members:
 
-crawler.py (will available in v.0.7)
-------------------------------------
+.. automodule:: theseus.processor.text2tag
+    :members:
 
-utils.py (will available in v.0.8)
-----------------------------------
+
+theseus.crawler
+---------------
+
+.. automodule:: theseus.crawler.getUrl
+    :members:
+
+theseus.utils
+-------------
+
+.. automodule:: theseus.utils.dnet
+    :members:    
+
+.. automodule:: theseus.utils.cleanDuplicates
+    :members:
+
+theseus.examples
+----------------
+
+.. automodule:: theseus.examples
+    :members:
 
 See :doc:`TODO` for details

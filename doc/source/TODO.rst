@@ -5,24 +5,24 @@ Roadmap
 0.8
 ===
 
-* add ``utils.py`` and collect some dispersed scripts into this package.
+* add ``utils.py`` and collect some dispersed scripts into this package. **[Done]**
 * solve abrveviation problems in the identification of phrases
     ex. "His name is D. Rodrigues and he his a scientist". The dot after D will break a sentence.
     So one needs to be awere of this.
     Another problem is that of the use of hiffens. a "pre-conference" should be treated as 1 word and not as two.
     This things have to be processed at the Document level before breaking the Document into Sentences
 
-0.7
-===
-
-* add ``fr`` stop words
-* add ``es`` stop words
-* rename **theseus** module to **processor** and incorporate ``crawler.py`` code into *Theseus* as **crawler** module
-* **Documentation** Write what is Thesues section of this documentation.
-
-
-0.6 **Present Version**
+0.7 **Present Version**
 =======================
+
+* add ``fr`` stop words **[Done]**
+* add ``es`` stop words **[Done]**
+* rename **theseus** module to **processor** and incorporate ``crawler.py`` code into *Theseus* as **crawler** module **[Done]**
+* **Documentation** Write what is Thesues section of this documentation. **[Done]**
+
+
+0.6 
+===
 
 * implement :py:meth:`theseus.tfpdf` method **[Done]**
 * test :py:meth:`theseus.tfpdf` with text from ECCS'10 Bursaries **[Done]**
