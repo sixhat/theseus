@@ -5,7 +5,7 @@
 # Copyright (c) 2009 Sixhat Pirate Parts. All rights reserved.
 
 RSS=http://feeds.feedburner.com/jornalPublico
-TIMEOUT=14
+TIMEOUT=140
 
 THIS=`dirname "$0"`
 DIR=`date +%F`

@@ -230,7 +230,7 @@ def idf(token, corpus):
         * *token* is a string               ex. 'word'        
         * *corpus* is a ``list`` of ``lists``    ex. [['this' 'is' 'a' 'word' 'document']['document' 'two']]
     """
-    return math.log((len(corpus)/dtf(token,corpus)),2)  # Base 2 Logs?...
+    return math.log((1.0/dtf(token,corpus)),2)  # Base 2 Logs?...
 
 def tf(token, doc):
     """

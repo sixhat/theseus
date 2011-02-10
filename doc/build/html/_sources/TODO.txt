@@ -12,8 +12,13 @@ Roadmap
     Another problem is that of the use of hiffens. a "pre-conference" should be treated as 1 word and not as two.
     This things have to be processed at the Document level before breaking the Document into Sentences
 
-0.7 **Present Version**
-=======================
+0.7.1 **Present Version**
+=========================
+
+* corrected :py:meth:`theseus.dtf` method
+
+0.7
+===
 
 * add ``fr`` stop words **[Done]**
 * add ``es`` stop words **[Done]**
