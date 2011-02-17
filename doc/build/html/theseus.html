@@ -34,6 +34,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="download.html" title="Download Theseus"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -52,25 +55,365 @@
 <h1>Theseus now!<a class="headerlink" href="#theseus-now" title="Permalink to this headline">¶</a></h1>
 <p>Theseus is a package of several python modules including:</p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li>processor</li>
 <li>crawler</li>
 <li>utils</li>
 <li>examples</li>
 </ul>
-</blockquote>
+</div></blockquote>
 <p>Theseus is part of <a class="reference external" href="http://theobservatorium.eu">http://theobservatorium.eu</a> project.</p>
-<div class="section" id="theseus-processor">
-<h2>theseus.processor<a class="headerlink" href="#theseus-processor" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-theseus.processor.theseus">
+<span id="theseus-processor"></span><h2>theseus.processor<a class="headerlink" href="#module-theseus.processor.theseus" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="theseus-py">
+<h3>theseus.py<a class="headerlink" href="#theseus-py" title="Permalink to this headline">¶</a></h3>
+<p>A Python Library for text processing in The Observatorium project</p>
+<p>Visit <a class="reference external" href="http://theobservatorium.eu/">http://theobservatorium.eu/</a> for the latest version</p>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="bun2006" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[Bun2006]</a></td><td>Bun, K., &amp; Ishizuka, M. (2006). Emerging topic tracking system in WWW. Knowledge-Based Systems, 19(3), 164-171. doi: 10.1016/j.knosys.2005.11.008.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="ishzuka2001" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[Ishzuka2001]</a></td><td>Ishizuka, M. (n.d.). Topic extraction from news archive using TF*PDF  algorithm. Proceedings of the Third International Conference on Web Information Systems Engineering, 2002. WISE 2002., 73-82. IEEE Comput. Sci. doi: 10.1109/WISE.2002.1181645.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="ishzuka2002" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[Ishzuka2002]</a></td><td>Ishizuka, M. (2001). Emerging Topic Tracking System. Proceedings Third International Workshop on Advanced Issues of E-Commerce and Web-Based Information Systems. WECWIS 2001, 2-11. IEEE Comput. Soc. doi: 10.1109/WECWIS.2001.933900</td></tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="theseus.processor.theseus.Channel">
+<em class="property">class </em><tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">Channel</tt><big>(</big><em>label</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#Channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.Channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Channel contains all documents of a certain channel</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>label</em> is a string</li>
+<li><em>doc</em> is a DocNode</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="class">
+<dt id="theseus.processor.theseus.DocNode">
+<em class="property">class </em><tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">DocNode</tt><big>(</big><em>idn=''</em>, <em>fnm=''</em>, <em>txt=''</em>, <em>ttl=''</em>, <em>lang='en'</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#DocNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.DocNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>The DocNode is the basic structue that olds each document in a corpus</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>idn</em> Id number of the node</li>
+<li><em>fnm</em> File name of the Document</li>
+<li><em>txt</em> Text of the Document</li>
+<li><em>ttl</em> Time to Live</li>
+<li><em>lang=&#8217;en&#8217;</em> The language of the text, defaults to english</li>
+</ul>
+</div></blockquote>
+<dl class="method">
+<dt id="theseus.processor.theseus.DocNode.extractSentences">
+<tt class="descname">extractSentences</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#DocNode.extractSentences"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.DocNode.extractSentences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract all the sentences of the document</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="theseus.processor.theseus.Domain">
+<em class="property">class </em><tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">Domain</tt><big>(</big><em>label</em>, <em>words=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#Domain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.Domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Domain is a field with a collection of words and a label</p>
+<p>Domain words should all be lower capital and without stopwords!</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="theseus.processor.theseus.Sentence">
+<em class="property">class </em><tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">Sentence</tt><big>(</big><em>text</em>, <em>lang='en'</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#Sentence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.Sentence" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Sentence is one of the building blocks of Documents</p>
+<dl class="method">
+<dt id="theseus.processor.theseus.Sentence.cleanText">
+<tt class="descname">cleanText</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#Sentence.cleanText"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.Sentence.cleanText" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Processes the raw text of a sentence:</dt>
+<dd><ul class="first last simple">
+<li>creates a <tt class="docutils literal"><span class="pre">cleaned</span></tt> text without unauthorized letters,</li>
+<li>creates a <tt class="docutils literal"><span class="pre">words</span></tt> list</li>
+<li>creates a <tt class="docutils literal"><span class="pre">cleanedWords</span></tt> list without <strong>stopwords</strong></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.binary">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">binary</tt><big>(</big><em>token</em>, <em>doc</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#binary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.binary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the Binary existence of a token in a document (doc)</p>
+<p>returns 1 if token exists, 0 otherwise</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>token</em> is a string               ex. &#8216;word&#8217;</li>
+<li><em>doc</em> is a <tt class="docutils literal"><span class="pre">list</span></tt>                 ex. [&#8216;this&#8217; &#8216;is&#8217; &#8216;a&#8217; &#8216;word&#8217; &#8216;document&#8217;]</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.cleanString">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">cleanString</tt><big>(</big><em>s1</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#cleanString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.cleanString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleans strings from unauthorized letters</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.cleanStringNoDel">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">cleanStringNoDel</tt><big>(</big><em>s1</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#cleanStringNoDel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.cleanStringNoDel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleans strings from unauthorized letters</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.clusterHist">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">clusterHist</tt><big>(</big><em>clst</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#clusterHist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.clusterHist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a List of DocNodes and returns an histogram of the most common words</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.dtf">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">dtf</tt><big>(</big><em>token</em>, <em>corpus</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#dtf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.dtf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the fraction of documents of the corpus that have a token</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>token</em> is a string               ex. &#8216;word&#8217;</li>
+<li><em>corpus</em> is a <tt class="docutils literal"><span class="pre">list</span></tt> of <tt class="docutils literal"><span class="pre">lists</span></tt>    ex. [[&#8216;this&#8217; &#8216;is&#8217; &#8216;a&#8217; &#8216;word&#8217; &#8216;document&#8217;][&#8216;document&#8217; &#8216;two&#8217;]]</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.enClean">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">enClean</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#enClean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.enClean" title="Permalink to this definition">¶</a></dt>
+<dd><p>English Stop Words</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.esClean">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">esClean</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#esClean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.esClean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spanish Stop Words</p>
+<p>obtained from <a class="reference external" href="http://www.ranks.nl/stopwords/spanish.html">http://www.ranks.nl/stopwords/spanish.html</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.extractPhrases">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">extractPhrases</tt><big>(</big><em>s1</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#extractPhrases"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.extractPhrases" title="Permalink to this definition">¶</a></dt>
+<dd><p>extractPhrases breaks a document into a sequence of phrases.</p>
+<p>XXX: We need to deal with numbers...</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.frClean">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">frClean</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#frClean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.frClean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frenc Stop Words</p>
+<p>obtained from <a class="reference external" href="http://www.ranks.nl/stopwords/french.html">http://www.ranks.nl/stopwords/french.html</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.idf">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">idf</tt><big>(</big><em>token</em>, <em>corpus</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#idf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.idf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the inverse document frequency of a token</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>token</em> is a string               ex. &#8216;word&#8217;</li>
+<li><em>corpus</em> is a <tt class="docutils literal"><span class="pre">list</span></tt> of <tt class="docutils literal"><span class="pre">lists</span></tt>    ex. [[&#8216;this&#8217; &#8216;is&#8217; &#8216;a&#8217; &#8216;word&#8217; &#8216;document&#8217;][&#8216;document&#8217; &#8216;two&#8217;]]</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.jaccard">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">jaccard</tt><big>(</big><em>s1</em>, <em>s2</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#jaccard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.jaccard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates de jaccard index for two lists</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.logtf">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">logtf</tt><big>(</big><em>token</em>, <em>doc</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#logtf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.logtf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the Log Term Frequency in a certain document (doc)</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>token</em> is a string   ex. &#8216;word&#8217;</li>
+<li><em>doc</em> is a <tt class="docutils literal"><span class="pre">list</span></tt>     ex. [&#8216;this&#8217; &#8216;is&#8217; &#8216;a&#8217; &#8216;word&#8217; &#8216;document&#8217;]</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.logtfidf">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">logtfidf</tt><big>(</big><em>token</em>, <em>doc</em>, <em>corpus</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#logtfidf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.logtfidf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the Log Term Frequency-Inverse Document Frequency of a token</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>token</em> is a string               ex. &#8216;word&#8217;</li>
+<li><em>doc</em> is a <tt class="docutils literal"><span class="pre">list</span></tt>                 ex. [&#8216;this&#8217; &#8216;is&#8217; &#8216;a&#8217; &#8216;word&#8217; &#8216;document&#8217;]</li>
+<li><em>corpus</em> is a <tt class="docutils literal"><span class="pre">list</span></tt> of <tt class="docutils literal"><span class="pre">lists</span></tt>    ex. [[&#8216;this&#8217; &#8216;is&#8217; &#8216;a&#8217; &#8216;word&#8217; &#8216;document&#8217;][&#8216;document&#8217; &#8216;two&#8217;]]</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.normF">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">normF</tt><big>(</big><em>token</em>, <em>channel</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#normF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.normF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the normalized frequency of a term in a channel of documents</p>
+<p>see <a class="reference internal" href="#theseus.processor.theseus.tfpdf" title="theseus.processor.theseus.tfpdf"><tt class="xref py py-meth docutils literal"><span class="pre">tfpdf()</span></tt></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.ptClean">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">ptClean</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#ptClean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.ptClean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Portuguese Stop Words</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.tf">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">tf</tt><big>(</big><em>token</em>, <em>doc</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#tf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.tf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the term frequency in a certain document (doc)</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>token</em> is a string   ex. &#8216;word&#8217;</li>
+<li><em>doc</em> is a <tt class="docutils literal"><span class="pre">list</span></tt>     ex. [&#8216;this&#8217; &#8216;is&#8217; &#8216;a&#8217; &#8216;word&#8217; &#8216;document&#8217;]</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.tfidf">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">tfidf</tt><big>(</big><em>token</em>, <em>doc</em>, <em>corpus</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#tfidf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.tfidf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the Term Frequency-Inverse Document Frequency of a token</p>
+<blockquote>
+<div><ul class="simple">
+<li><em>token</em> is a string               ex. &#8216;word&#8217;</li>
+<li><em>doc</em> is a <tt class="docutils literal"><span class="pre">list</span></tt>                 ex. [&#8216;this&#8217; &#8216;is&#8217; &#8216;a&#8217; &#8216;word&#8217; &#8216;document&#8217;]</li>
+<li><em>corpus</em> is a <tt class="docutils literal"><span class="pre">list</span></tt> of <tt class="docutils literal"><span class="pre">lists</span></tt>    ex. [[&#8216;this&#8217; &#8216;is&#8217; &#8216;a&#8217; &#8216;word&#8217; &#8216;document&#8217;][&#8216;document&#8217; &#8216;two&#8217;]]</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.theseus.tfpdf">
+<tt class="descclassname">theseus.processor.theseus.</tt><tt class="descname">tfpdf</tt><big>(</big><em>token</em>, <em>channels</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/theseus.html#tfpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.theseus.tfpdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the Term Frequency * Proportional Document Frequency (TF*PDF ) <a class="reference internal" href="#bun2006">[Bun2006]</a> <a class="reference internal" href="#ishzuka2001">[Ishzuka2001]</a> <a class="reference internal" href="#ishzuka2002">[Ishzuka2002]</a></p>
+<ul class="simple">
+<li><em>token</em> is a string</li>
+<li><em>channels</em> is a <tt class="docutils literal"><span class="pre">list</span></tt> of <tt class="docutils literal"><span class="pre">Channel</span></tt></li>
+</ul>
+</dd></dl>
+
 </div>
-<div class="section" id="theseus-crawler">
-<h2>theseus.crawler<a class="headerlink" href="#theseus-crawler" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-theseus.processor.text2tag"></span><div class="section" id="text2tag-py">
+<h3>text2tag.py<a class="headerlink" href="#text2tag-py" title="Permalink to this headline">¶</a></h3>
+<p>Converts HTML files to TXT according to the Text to Tag ratio proposed by <a class="reference internal" href="#weninger2008">[Weninger2008]</a></p>
+<p>Usage:
+<tt class="docutils literal"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">text2tag.py</span> <span class="pre">&lt;inputfile&gt;</span> <span class="pre">&lt;smooth-radius&gt;</span></tt></p>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="weninger2008" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[Weninger2008]</a></td><td>Weninger, T., &amp; Hsu, W. H. (2008). Text Extraction from the Web via Text-to-Tag Ratio. 2008 19th International Conference on Database and Expert Systems Applications, 23-28. Ieee. doi: 10.1109/DEXA.2008.12.</td></tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="theseus.processor.text2tag.MyStripper">
+<em class="property">class </em><tt class="descclassname">theseus.processor.text2tag.</tt><tt class="descname">MyStripper</tt><a class="reference internal" href="_modules/theseus/processor/text2tag.html#MyStripper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.text2tag.MyStripper" title="Permalink to this definition">¶</a></dt>
+<dd><p>docstring for MyStripper</p>
+<dl class="method">
+<dt id="theseus.processor.text2tag.MyStripper.handle_data">
+<tt class="descname">handle_data</tt><big>(</big><em>d</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/text2tag.html#MyStripper.handle_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.text2tag.MyStripper.handle_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>docstring for handle_data</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.text2tag.process">
+<tt class="descclassname">theseus.processor.text2tag.</tt><tt class="descname">process</tt><big>(</big><em>infile</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/text2tag.html#process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.text2tag.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process the html infile</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.text2tag.rm_blank_lines">
+<tt class="descclassname">theseus.processor.text2tag.</tt><tt class="descname">rm_blank_lines</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/text2tag.html#rm_blank_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.text2tag.rm_blank_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>removes blank lines from a string</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.text2tag.rm_head">
+<tt class="descclassname">theseus.processor.text2tag.</tt><tt class="descname">rm_head</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/text2tag.html#rm_head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.text2tag.rm_head" title="Permalink to this definition">¶</a></dt>
+<dd><p>rm_head: Removes everything in the &lt;head&gt;&lt;/head&gt; of the document</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.text2tag.rm_scripts">
+<tt class="descclassname">theseus.processor.text2tag.</tt><tt class="descname">rm_scripts</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/text2tag.html#rm_scripts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.text2tag.rm_scripts" title="Permalink to this definition">¶</a></dt>
+<dd><p>rm_scripts: Removes &lt;scripts&gt; and Comments &lt;!&#8211; &#8211;&gt; from html files</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="theseus.processor.text2tag.rm_tags">
+<tt class="descclassname">theseus.processor.text2tag.</tt><tt class="descname">rm_tags</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/theseus/processor/text2tag.html#rm_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.processor.text2tag.rm_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>rm_tags: Removes HTML Tags from string</p>
+</dd></dl>
+
 </div>
-<div class="section" id="theseus-utils">
-<h2>theseus.utils<a class="headerlink" href="#theseus-utils" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="theseus-examples">
-<h2>theseus.examples<a class="headerlink" href="#theseus-examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-theseus.crawler.getUrl">
+<span id="theseus-crawler"></span><h2>theseus.crawler<a class="headerlink" href="#module-theseus.crawler.getUrl" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="geturl-py">
+<h3>getUrl.py<a class="headerlink" href="#geturl-py" title="Permalink to this headline">¶</a></h3>
+<p>Parses a downloaded RSS file and downloads all items in the Feed</p>
+<dl class="function">
+<dt id="theseus.crawler.getUrl.main">
+<tt class="descclassname">theseus.crawler.getUrl.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/theseus/crawler/getUrl.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.crawler.getUrl.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>This module receives as argument the folder where the rss.xml file is stored</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-theseus.utils.dnet">
+<span id="theseus-utils"></span><h2>theseus.utils<a class="headerlink" href="#module-theseus.utils.dnet" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="dnet-py">
+<h3>dnet.py<a class="headerlink" href="#dnet-py" title="Permalink to this headline">¶</a></h3>
+<p>a Telnet Library to Connect to Guess</p>
+<p>Guess is a graph exploration tool that can be found at: <a class="reference external" href="http://guess.wikispot.org/Front_Page">http://guess.wikispot.org/Front_Page</a></p>
+<dl class="class">
+<dt id="theseus.utils.dnet.Dnet">
+<em class="property">class </em><tt class="descclassname">theseus.utils.dnet.</tt><tt class="descname">Dnet</tt><big>(</big><em>gr</em><big>)</big><a class="reference internal" href="_modules/theseus/utils/dnet.html#Dnet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.utils.dnet.Dnet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor for a telnet library to connect to Guess
+See Guess - <a class="reference external" href="http://graphexploration.cond.org/">http://graphexploration.cond.org/</a></p>
+<dl class="method">
+<dt id="theseus.utils.dnet.Dnet.send">
+<tt class="descname">send</tt><big>(</big><em>cmd</em><big>)</big><a class="reference internal" href="_modules/theseus/utils/dnet.html#Dnet.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.utils.dnet.Dnet.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a message to Guess via telnet.
+Guess - <a class="reference external" href="http://graphexploration.cond.org/">http://graphexploration.cond.org/</a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-theseus.utils.cleanDuplicates"></span><div class="section" id="cleanduplicates-py">
+<h3>cleanDuplicates.py<a class="headerlink" href="#cleanduplicates-py" title="Permalink to this headline">¶</a></h3>
+<p>Clean files with the same contents from a folder, keeping the oldest one.</p>
+<p>usage: <tt class="docutils literal"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">cleanDuplicates.py</span> <span class="pre">DIR_TO_CLEAN</span></tt></p>
+<dl class="function">
+<dt id="theseus.utils.cleanDuplicates.main">
+<tt class="descclassname">theseus.utils.cleanDuplicates.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/theseus/utils/cleanDuplicates.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#theseus.utils.cleanDuplicates.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>receives as argument the dir to clean</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-theseus.examples">
+<span id="theseus-examples"></span><h2>theseus.examples<a class="headerlink" href="#module-theseus.examples" title="Permalink to this headline">¶</a></h2>
 <p>See <a class="reference internal" href="TODO.html"><em>Roadmap</em></a> for details</p>
 </div>
 </div>
@@ -84,10 +427,21 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Theseus now!</a><ul>
-<li><a class="reference internal" href="#theseus-processor">theseus.processor</a></li>
-<li><a class="reference internal" href="#theseus-crawler">theseus.crawler</a></li>
-<li><a class="reference internal" href="#theseus-utils">theseus.utils</a></li>
-<li><a class="reference internal" href="#theseus-examples">theseus.examples</a></li>
+<li><a class="reference internal" href="#module-theseus.processor.theseus">theseus.processor</a><ul>
+<li><a class="reference internal" href="#theseus-py">theseus.py</a></li>
+<li><a class="reference internal" href="#text2tag-py">text2tag.py</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-theseus.crawler.getUrl">theseus.crawler</a><ul>
+<li><a class="reference internal" href="#geturl-py">getUrl.py</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-theseus.utils.dnet">theseus.utils</a><ul>
+<li><a class="reference internal" href="#dnet-py">dnet.py</a></li>
+<li><a class="reference internal" href="#cleanduplicates-py">cleanDuplicates.py</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-theseus.examples">theseus.examples</a></li>
 </ul>
 </li>
 </ul>
@@ -127,6 +481,9 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="download.html" title="Download Theseus"
              >next</a> |</li>
         <li class="right" >
@@ -137,7 +494,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2010-2011, David Rodrigues.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>
