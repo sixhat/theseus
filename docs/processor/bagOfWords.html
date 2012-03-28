@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>bagOfWords.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>bagOfWords.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p><strong>dependencies</strong> = """
+        This packages depends on some external libraries.
+        For Stemming we use the package <stemming> from
+        http://pypi.python.org/pypi/stemming/</p>
+<pre><code>    Install with "easy_install steamming"
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;David M.S. Rodrigues &lt;dmsrs@iscte.pt&gt;&#39;</span>
+
+<span class="n">__doc__</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">For a list of TXT files create a bag of words of the k most used ones.</span>
+
+<span class="s">Input: a TXT file directory</span>
+
+<span class="s">Output: two files! a histogram of words and a bag of words choosen by</span>
+<span class="s">        the scientists.</span>
+
+<span class="s">        Usage: python bagOfWords.py &lt;TXT DIRECTORY&gt; [NUM_OF_WORDS]</span>
+
+<span class="s">        It will output a hist.dat file and an words.dat file.</span>
+<span class="s">#DIVIDER</span>
+<span class="s">import os</span>
+<span class="s">import sys</span>
+<span class="s">import datetime</span>
+<span class="s">import codecs</span>
+<span class="s">import theseus</span>
+<span class="s">import glob</span>
+<span class="s">from stemming.porter2 import stem</span>
+<span class="s">from operator import itemgetter</span>
+<span class="s">#DIVIDER</span>
+<span class="s">def log(st):</span>
+<span class="s">    s = &quot; &quot;.join([&#39;--&#39;, str(datetime.datetime.utcnow()), &#39;--&#39;, st])</span>
+<span class="s">    f = open(str(os.getpid()) + &#39;-bagOfwords.log&#39;, &#39;a&#39;)</span>
+<span class="s">    f.write(s + &quot;</span><span class="se">\n</span><span class="s">&quot;)</span>
+<span class="s">    f.close()</span>
+<span class="s">    print s</span>
+<span class="s">#DIVIDER</span>
+<span class="s">def outputBagWords(wds, hist=True):</span>
+<span class="s">    f = codecs.open(str(os.getpid()) + &#39;-bagwords.txt&#39;, &#39;w&#39;, encoding=&#39;utf-8&#39;)</span>
+<span class="s">    n = 1</span>
+<span class="s">    for w, k in wds:</span>
+<span class="s">        f.write(w + &quot;</span><span class="se">\t</span><span class="s">&quot; + str(n) + &quot;</span><span class="se">\n</span><span class="s">&quot;)</span>
+<span class="s">        n += 1</span>
+<span class="s">    f.close()</span>
+<span class="s">    if hist:</span>
+<span class="s">        totalWords = sum([i for w, i in wds])</span>
+<span class="s">        f = codecs.open(str(os.getpid()) + &#39;-bagwords-hist.txt&#39;, &#39;w&#39;,</span>
+<span class="s">                        encoding=&#39;utf-8&#39;)</span>
+<span class="s">        for w, k in wds:</span>
+<span class="s">            f.write(w + &quot;</span><span class="se">\t</span><span class="s">&quot; + str(k) + &quot;</span><span class="se">\t</span><span class="s">&quot; + str(k / totalWords) + &quot;</span><span class="se">\n</span><span class="s">&quot;)</span>
+<span class="s">        f.close()</span>
+<span class="s">#DIVIDER</span>
+<span class="s">if len(sys.argv) != 3 and len(sys.argv) != 2:</span>
+<span class="s">    print __doc__</span>
+<span class="s">    sys.exit(1)</span>
+
+<span class="s">path = sys.argv[1]</span>
+<span class="s">#DIVIDER</span>
+<span class="s">if path[-1] != &#39;/&#39;:</span>
+<span class="s">    path += &#39;/&#39;</span>
+
+<span class="s">if len(sys.argv) == 3:</span>
+<span class="s">    nwords = int(sys.argv[2])</span>
+
+<span class="s">log(&quot;Start Processing&quot;)</span>
+
+<span class="s">words = {}</span>
+
+<span class="s">dirList = glob.glob(&quot;&quot;.join([path, &#39;*.txt&#39;]))</span>
+
+<span class="s">docs = []</span>
+<span class="s">#DIVIDER</span>
+<span class="s">for file in dirList:</span>
+<span class="s">    try:</span>
+<span class="s">        f = codecs.open(file, &#39;r&#39;, encoding=&#39;utf-8&#39;)</span>
+<span class="s">        txt = f.read()</span>
+<span class="s">        f.close()</span>
+<span class="s">        doc = theseus.DocNode(len(docs), file, txt, ttl=100)</span>
+<span class="s">        docs.append(doc)</span>
+<span class="s">    except:</span>
+<span class="s">        log(&quot;Problem reading file: &quot; + file + &quot; -- &quot; + str(sys.exc_info()[0]))</span>
+
+<span class="s">log(&quot;Total Files Read : &quot; + str(len(docs)))</span>
+<span class="s">#DIVIDER</span>
+<span class="s">for doc in docs:</span>
+<span class="s">    doc.extractSentences()</span>
+<span class="s">    for stc in doc.sentences:</span>
+<span class="s">        stc.cleanText()</span>
+<span class="s">        for word in stc.cleanedWords:</span>
+<span class="s">            stemed = stem(word.lower())</span>
+<span class="s">            if len(stemed) &gt; 2:</span>
+<span class="s">                if stemed in words:</span>
+<span class="s">                    words[stemed] += 1</span>
+<span class="s">                else:</span>
+<span class="s">                    words[stemed] = 1</span>
+
+<span class="s">log(&quot;Stemming and word Bag Histogram constructed&quot;)</span>
+<span class="s">words = sorted(words.items(), key=itemgetter(1), reverse=True)</span>
+
+<span class="s">outputBagWords(words)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>TODO Validate ARGUMENTS HERE</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>check to see if path ends with slash (/)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>READ FILES INTO DocNode Objects</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Extract All Sentences from the Documents and from all Words
+stem them and add them to the words dictionary.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  
+</div>
+</body>

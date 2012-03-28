@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>swap_tags_file.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>swap_tags_file.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>import argparse</p>
+<p>parser=argparse.ArgumentParser(description=<strong>doc</strong>)
+parser.add_argument('tagfile', help='The input tags file', type=file)
+parser.add_argument('outfile', help='The output tags file', type=str)
+parser.add_argument('-s','--sep', help='Field separator, defaults to <tab>',
+                    default='\t')</p>
+<p>args=parser.parse_args()</p>
+<p>fou=open(args.outfile,'w')
+s=[]</p>
+<p>for line in args.tagfile:
+    st=line.strip().split(args.sep)
+    s.append(st[1]+args.sep+st[0]+'\n')
+fou.writelines(s)
+fou.close()</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;david&#39;</span>
+<span class="n">__doc__</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">Swaps the columns of a tags file. Equivalent to transposing an incidence</span>
+<span class="s">matrix.</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  
+</div>
+</body>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>dateTimeSorter.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>dateTimeSorter.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>ef log(st):
+   s = " ".join(['--', str(datetime.datetime.utcnow()), '--', st])
+   f = open(str(os.getpid()) + '-cluster.log', 'a')
+   f.write(s + "\n")
+   f.close()
+   print s</p>
+<p>ef compareFiles(x, y):
+   assert isinstance(x, str)
+   assert isinstance(y, str)
+   x = x.replace(path, '').split('<strong>')
+   y = y.replace(path, '').split('</strong>')
+   fmt = '%Y-%m-%d_%Hh%Mm%Ss'
+   a = time.strptime(x[0], fmt)
+   b = time.strptime(y[0], fmt)
+   if a &gt; b:
+       return 1
+   elif a &lt; b:
+       return -1
+   else:
+       return 0</p>
+<p>Read Files
+ TODO Validate ARGUMENTS HERE
+f len(sys.argv) != 3:
+   print <strong>doc</strong>
+   sys.exit(1)</p>
+<p>ath = sys.argv[1]
+att = sys.argv[2]</p>
+<p>f (path[-1] != '/'):
+   path += '/'</p>
+<p>Sort Files by date
+iles = glob.glob("".join([path, patt]))
+iles.sort(cmp=compareFiles)</p>
+<p>otal = len(files)</p>
+<p>or n in range(1, total + 1):
+   str = 'f-%0.5d.txt' % n
+   print str, files[n - 1]</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;David Rodrigues&#39;</span>
+<span class="n">__doc__</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">    This script renames the TXT files based on a sorting criteria.</span>
+
+<span class="s">    USAGE: python dateTimeSorter &lt;path&gt; &lt;pattern&gt;</span>
+
+<span class="s">    NOTE: if using wildcards *, ? include the pattern inside quotes</span>
+
+<span class="s">    EXAMPLE: python dateTimeSorter ./journal/ &#39;*.txt&#39;</span>
+
+<span class="s">        it expects that filenames are writen in the form: 2011-11-28_8h53m0s_15 de MarÃ§o de 2012 20:53:23\_\_2728007653.html.txt</span>
+<span class="s">        It discards everything after the double underscores \_\_, but the first part has to comply to this format</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  
+</div>
+</body>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>generateBipartiteGraph.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>generateBipartiteGraph.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p><strong>version</strong>="0.1.0"</p>
+<p>import sys
+import random
+import argparse</p>
+<p>def writeTags(graph, outfile='graph.tags'):
+    fo = open(outfile, 'w')
+    for el in graph:
+        fo.write("%s %s\n" % el)
+    fo.close()</p>
+<p>parser = argparse.ArgumentParser(description='Simple Bipartite Graph ' \
+                                             'generator')</p>
+<p>parser.add_argument('a', type=int, help="Number of elements on set A",
+                    default=10)
+parser.add_argument('b', type=int, help="Number of elements on set B",
+                    default=10)
+parser.add_argument('d', type=int, help="Average outdegree of set A " \
+                                         "elements")
+parser.add_argument('-o', '--outfile', help='output file where to save the ' \
+                                            'edge graph (default=graph.tags)' \
+                                            '', default='graph.tags')
+args=parser.parse_args()</p>
+<p>na = args.a
+nb = args.b
+deg = 2*args.d</p>
+<p>setA = range(na);
+setB = range(na, (na + nb))</p>
+<p>edges=[]
+for a in setA:
+    for _b in range(deg):
+        if random.random()&gt;0.5:
+            b=random.choice(setB)</p>
+<h1>print a, b</h1>
+<pre><code>        edges.append(("a"+str(a),"b"+str(b)))
+</code></pre>
+<p>writeTags(edges, args.outfile)</p>
+<p>print "Graph saved to", args.outfile</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;david&#39;</span>
+<span class="n">__log__</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">Generate a simple Bipartite Tag Graph</span>
+
+<span class="s">0.1.0 - Simple working example with</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  
+</div>
+</body>

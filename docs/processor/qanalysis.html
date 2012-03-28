@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>qanalysis.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>qanalysis.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>import json
+import argparse
+import numpy
+import networkx as nx
+import os
+import codecs</p>
+<p>def usage():
+    print """
+    USAGE:
+        python qanalysis.py <file.tags> <separator></p>
+<pre><code>Example:
+    python qanalysis guardian.tags :
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;david&#39;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&#39;0.1.1&#39;</span>
+<span class="n">__log__</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">An Generic Q-analysis collection of scripts</span>
+
+<span class="s">* Shared Vertex Matrix</span>
+<span class="s">* Incidence Matrix</span>
+<span class="s">* save to JSON</span>
+<span class="s">* load to JSON</span>
+<span class="s">#DIVIDER</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">def json_graph(graph, file=&#39;graph.json&#39;):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    f = open(file, &#39;w&#39;)</span>
+<span class="s">    json.dump(graph, f)</span>
+<span class="s">    f.close()</span>
+<span class="s">#DIVIDER</span>
+<span class="s">def load_graph(file=&#39;graph.json&#39;):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    f = open(file, &#39;r&#39;)</span>
+<span class="s">    graph = json.load(f)</span>
+<span class="s">    f.close()</span>
+<span class="s">    return graph</span>
+<span class="s">#DIVIDER</span>
+<span class="s">def load_edge_file(file, sep=&#39;:&#39;):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    f = codecs.open(file, &#39;r&#39;, &#39;utf-8&#39;)</span>
+<span class="s">    A = []</span>
+<span class="s">    B = []</span>
+<span class="s">    graph = {}  # direct graph</span>
+<span class="s">    rgraph = {}   # reverse graph</span>
+<span class="s">    for line in f:</span>
+<span class="s">        st = line.strip().split(sep)</span>
+<span class="s">        el = st[0].strip()</span>
+<span class="s">        ot = st[1].strip()</span>
+
+<span class="s">        if el == &quot;ACEP&quot;:</span>
+<span class="s">            print st</span>
+<span class="s">            print ot</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        if el not in graph:</span>
+<span class="s">            A.append(el)</span>
+<span class="s">            graph[el] = {}</span>
+<span class="s">            graph[el][&#39;name&#39;] = el</span>
+<span class="s">            graph[el][&#39;connected_to&#39;] = []</span>
+<span class="s">        if ot not in graph[el][&#39;connected_to&#39;]:</span>
+<span class="s">            graph[el][&#39;connected_to&#39;].append(ot)</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        if ot not in rgraph:</span>
+<span class="s">            rgraph[ot] = {}</span>
+<span class="s">            rgraph[ot][&#39;name&#39;] = ot</span>
+<span class="s">            rgraph[ot][&#39;connected_to&#39;] = []</span>
+<span class="s">        if el not in rgraph[ot][&#39;connected_to&#39;]:</span>
+<span class="s">            rgraph[ot][&#39;connected_to&#39;].append(el)</span>
+<span class="s">        if ot not in B:</span>
+<span class="s">            B.append(ot)</span>
+
+<span class="s">    f.close()</span>
+<span class="s">    return {&#39;A&#39;: A, &#39;B&#39;: B, &#39;graph&#39;: graph, &#39;rgraph&#39;: rgraph}</span>
+<span class="s">#DIVIDER</span>
+<span class="s">def calc_incidence_matrix(graph):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    I = numpy.zeros((len(graph[&#39;A&#39;]), len(graph[&#39;B&#39;])), dtype=int)</span>
+<span class="s">    print &quot;-- computing Incidence Matrix - shape&quot;, I.shape</span>
+<span class="s">    for s in graph[&#39;graph&#39;].items():</span>
+<span class="s">        for k in s[1][&#39;connected_to&#39;]:</span>
+<span class="s">            sl = graph[&#39;A&#39;].index(s[1][&#39;name&#39;])</span>
+<span class="s">            sc = graph[&#39;B&#39;].index(k)</span>
+<span class="s">            I[sl, sc] = 1</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    numpy.savetxt(&quot;incidence.txt&quot;, I, fmt=&#39;</span><span class="si">%1d</span><span class="s">&#39;)</span>
+<span class="s">    return I</span>
+<span class="s">#DIVIDER</span>
+<span class="s">def calc_shared_vertex_matrix(graph, incidence=None):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    if incidence is None:</span>
+<span class="s">        incidence = calc_incidence_matrix(graph)</span>
+
+<span class="s">    SVM = numpy.zeros((len(graph[&#39;A&#39;]), len(graph[&#39;A&#39;])), dtype=int)</span>
+<span class="s">    print &quot;-- computing Shared Face Matrix - shape &quot;, SVM.shape</span>
+<span class="s">    for line in range(len(incidence)):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        for col in range(line, len(incidence)):</span>
+<span class="s">            SVM[line, col] = numpy.dot(incidence[line, :], incidence[col, :])</span>
+<span class="s">            SVM[col, line] = SVM[line, col]</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    numpy.savetxt(&#39;shared_face.txt&#39;, SVM, fmt=&#39;</span><span class="si">%1d</span><span class="s">&#39;)</span>
+<span class="s">    return SVM</span>
+<span class="s">#DIVIDER</span>
+
+<span class="s">parser = argparse.ArgumentParser(</span>
+<span class="s">    description=&#39;Theseus Q-analysis Processor &#39;</span><span class="se">\</span>
+<span class="s">                &#39;&#39; + __version__,</span>
+<span class="s">    epilog=&quot;[*] - Q-analysis is alpha state. Be&quot;</span><span class="se">\</span>
+<span class="s">           &quot; careful with its use.&quot;)</span>
+
+<span class="s">parser.add_argument(&#39;-t&#39;, &#39;--tagfile&#39;, help=&#39;Tag file to load&#39;,</span>
+<span class="s">                    type=str)</span>
+<span class="s">parser.add_argument(&#39;-s&#39;, &#39;--sep&#39;, help=&#39;Tag file Separator (defaults to : )&#39;,</span>
+<span class="s">                    type=str,</span>
+<span class="s">                    default=&#39;:&#39;)</span>
+<span class="s">parser.add_argument(&#39;-j&#39;, &#39;--jsonfile&#39;, help=&#39;JSON file to load&#39;,</span>
+<span class="s">                    type=str)</span>
+<span class="s">parser.add_argument(&#39;--version&#39;, action=&#39;version&#39;,</span>
+<span class="s">                    version=&#39;</span><span class="si">%(prog)s</span><span class="s"> &#39; + __version__)</span>
+
+<span class="s">args = parser.parse_args()</span>
+<span class="s">#DIVIDER</span>
+<span class="s">g = {}</span>
+<span class="s">#DIVIDER</span>
+<span class="s">if args.tagfile is None and args.jsonfile is None:</span>
+<span class="s">    g = load_graph()</span>
+<span class="s">if args.tagfile is not None:</span>
+<span class="s">    g = load_edge_file(args.tagfile, args.sep)</span>
+<span class="s">elif args.jsonfile is not None:</span>
+<span class="s">    g = json.load(args.jsonfile)</span>
+<span class="s">#DIVIDER</span>
+<span class="s">json_graph(g)</span>
+<span class="s">#DIVIDER</span>
+<span class="s">I = calc_incidence_matrix(g)</span>
+<span class="s">#DIVIDER</span>
+<span class="s">SVM = calc_shared_vertex_matrix(g, I)</span>
+<span class="s">#DIVIDER</span>
+
+
+
+
+<span class="s">print &quot;-- Incidence Matrix&quot;</span>
+<span class="s">print I</span>
+<span class="s">print &quot;-- Shared Vertex Matrix&quot;</span>
+<span class="s">print SVM</span>
+<span class="s">#DIVIDER</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">def calculate_sets_q(sets, A):</span>
+<span class="s">    all = []</span>
+<span class="s">    for x in range(len(sets)):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        if len(sets[x]) &gt; 0: #and sets[x] not in all:</span>
+<span class="s">            comp = sets[x]</span>
+<span class="s">#DIVIDER</span>
+<span class="s">            b = False</span>
+<span class="s">            for a in all:</span>
+<span class="s">                if comp &lt;= a: # equivalent to comp.issubset(a)</span>
+<span class="s">                    b = True</span>
+<span class="s">                    break</span>
+<span class="s">            if (b):</span>
+<span class="s">                continue</span>
+<span class="s">#DIVIDER</span>
+<span class="s">            for s in sets:</span>
+<span class="s">                if s.issubset(comp):</span>
+<span class="s">                    continue</span>
+<span class="s">                if not comp.isdisjoint(s):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">                    comp.update(s)</span>
+<span class="s">#DIVIDER</span>
+<span class="s">                    if len(comp) == len(A):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">                        return [comp]</span>
+<span class="s">            if comp not in all:</span>
+<span class="s">                all.append(comp)</span>
+<span class="s">    return all</span>
+<span class="s">#DIVIDER</span>
+<span class="s">def areConnected(a1, b1, q=1):</span>
+<span class="s">    a = set(a1[&#39;connected_to&#39;])</span>
+<span class="s">    b = set(b1[&#39;connected_to&#39;])</span>
+<span class="s">    if (len(a.intersection(b)) &gt;= q):</span>
+<span class="s">        return True</span>
+<span class="s">    else:</span>
+<span class="s">        return False</span>
+
+<span class="s">for q in range(SVM.max()):</span>
+<span class="s">    sets = []</span>
+<span class="s">    print &quot;&quot;</span>
+<span class="s">    print &quot;-- </span><span class="si">%d</span><span class="s">-connected Matrix&quot; % q</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    for l in SVM:</span>
+<span class="s">        a = numpy.where(l &gt;= (q + 1))</span>
+<span class="s">        sets.append(set(a[0]))</span>
+<span class="s">#DIVIDER</span>
+
+<span class="s">    print &quot;-- q=&quot;, q</span>
+<span class="s">    res = calculate_sets_q(sets, g[&#39;A&#39;])</span>
+<span class="s">    print res, &quot;n.components:&quot;, len(res)</span>
+
+<span class="s">    for el in res:</span>
+<span class="s">        out = [g[&#39;A&#39;][x] for x in list(el)]</span>
+<span class="s">        print &quot;-- &quot; + &quot; ::: &quot;.join(out)</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    outf = str(q) + (&#39;-</span><span class="si">%d</span><span class="s">&#39; </span><span class="si">% o</span><span class="s">s.getppid())</span>
+<span class="s">    G = nx.Graph()</span>
+<span class="s">    for el in res:</span>
+<span class="s">        out = [g[&#39;A&#39;][x] for x in list(el)]</span>
+
+<span class="s">        G.add_nodes_from(out)</span>
+
+<span class="s">        for x in range(len(out)):</span>
+<span class="s">            for y in range(x + 1, len(out)):</span>
+<span class="s">                a = g[&#39;graph&#39;][out[x]]</span>
+<span class="s">                b = g[&#39;graph&#39;][out[y]]</span>
+<span class="s">                if areConnected(a, b, q):</span>
+<span class="s">                    G.add_edge(out[x], out[y])</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    nx.write_graphml(G, outf + &#39;.graphml&#39;, encoding=&#39;utf-8&#39;)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Save graph to json object file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Load graph from json object file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Loads the edge file into sets A and B and a graph and a reverse graph</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>direct graph</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>reverse graph</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Computes the incidence matrix from a graph object</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>print I</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>From a graph object and the incidence matrix,</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>omputes the shared face matrix.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>print "-- processing line nr. ", line</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>print SVM</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <h1>---- Program starts running here parsing command line options...</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <h1>Let's have an empty graph</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <h1>Command line options are parsed so now let's act on them:</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <h1>Here we have the Graph (g) ready to do calculations on top of.</h1>
+<h1>simplicial complex</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <h1>incidence matrix</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <h1>Shared Vertex Matrix</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <h1>Algoritmo para calcular os simlex de diferentes q-order e as q-chains</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>print "Maximum value of SVM ", SVM.max()
+print "Mean value of SVM ", SVM.mean()</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>print "-- %d" %x</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <h1>First check to see if this comp is a subset of a final (all)</h1>
+<p>set, this meaning that we don't need to compute it.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>the component that we ara analysing now isn't part of a
+component yet so we need to union it with others
+print "-- initial" , comp</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>print "-- union with",s</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>print comp</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <p>print "-- FULL HOUSE"</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>print SVM*(SVM&gt;=(q+1))</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <p>print sets
+print set(SVM)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <p>Export network in a readable format</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <p>nx.write_pajek(G, outf+'.net')
+nx.write_weighted_edgelist(G, outf+'.edge', delimiter=',')
+nx.write_gexf(G, outf+'.gexf')
+nx.write_gml(G, outf+'.gml')</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  
+</div>
+</body>

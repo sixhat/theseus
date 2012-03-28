@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>generateFeatures.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>generateFeatures.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Some Classes
+ass ReturnValue:
+  def <strong>init</strong>(self, words, docu):
+      self.words = words
+      self.docu = docu</p>
+<p>Some Functions --------------------------------------------------------------</p>
+<p>f index(st, i):
+  f = open(str(os.getpid()) + '-index.txt', 'a')
+  f.write(str(i) + "\t" + st + "\n")
+  f.close()</p>
+<p>f log(st):
+  s = " ".join(['--', str(datetime.datetime.utcnow()), '--', st])
+  f = open(str(os.getpid()) + '-generateFeatures.log', 'a')
+  f.write(s + "\n")
+  f.close()
+  print s</p>
+<p>f outputFeatures(wds, b):
+  f = codecs.open(str(os.getpid()) + '-features.txt', 'a', encoding='utf-8')
+  #f=open('features.txt','a')
+  n = 1
+  feature = [0 for x in b]
+  for w in wds:
+      if b.has_key(w):
+          feature[b[w] - 1] = 1
+  try:
+      f.write(" ".join([str(x) for x in feature]) + "\n")
+  except:
+      log("Feature Not Writen")
+  f.flush()
+  f.close()</p>
+<p>f outputTFIDF(feat, bag):
+  f = codecs.open(str(os.getpid()) + '-features-tfidf.txt', 'w',
+                  encoding='utf-8')
+  for doc in feat:
+      feature = [0.0 for x in bag]
+      for word, weight in doc.items():
+          if bag.has_key(word):
+              feature[bag[word] - 1] = weight
+      f.write(" ".join([str(x) for x in feature]) + "\n")
+      f.flush()
+  f.close()</p>
+<p>f compareFiles(x, y):
+  assert isinstance(x, str)
+  assert isinstance(y, str)
+  x = x.replace(path, '').split('<strong>')
+  y = y.replace(path, '').split('</strong>')
+  fmt = '%Y-%m-%d_%Hh%Mm%Ss'
+  a = time.strptime(x[0], fmt)
+  b = time.strptime(y[0], fmt)
+  if a &gt; b:
+      return 1
+  elif a &lt; b:
+      return -1
+  else:
+      return 0</p>
+<p>f extractWords(doc):
+  words = {}
+  docu = []
+  doc.extractSentences()
+  for stc in doc.sentences:
+      stc.cleanText()
+      for word in stc.cleanedWords:
+          stemed = stem(word.lower())
+          docu.append(stemed)
+          words[stemed] = 1
+  return ReturnValue(words, docu)</p>
+<p>f calcTFIDF(doc):
+  words = {}
+  for word in doc:
+      if not words.has_key(word):
+          words[word] = theseus.tfidf(word, doc, corpus)
+  return words</p>
+<hr />
+<p>TODO Validate ARGUMENTS HERE
+ len(sys.argv) != 3:
+  print <strong>doc</strong>
+  sys.exit(1)</p>
+<p>th = sys.argv[1]
+gf = sys.argv[2]</p>
+<p>g("Start Processing")</p>
+<p>rList = glob.glob("".join([path, '*.txt']))
+rList.sort(cmp=compareFiles)</p>
+<p>cs = []</p>
+<p>Load bag of words
+= codecs.open(bagf, 'r', encoding='utf-8')
+= b.readlines()
+close()</p>
+<p>g = {}
+r l in c:
+  s = l.split()
+  bag[s[0]] = int(s[1])</p>
+<p>g("Using Features Dimension: " + str(len(bag)))</p>
+<p>READ FILES INTO DocNode Objects
+r file in dirList:
+  try:
+      f = codecs.open(file, 'r', encoding='utf-8')
+      txt = f.read()
+      f.close()
+      doc = theseus.DocNode(len(docs), file, txt, ttl=100)
+      docs.append(doc)
+  except:
+      log("Problem reading file: " + file + " -- " + str(sys.exc_info()[0]))</p>
+<p>g("Total Files Read : " + str(len(docs)))</p>
+<p>xtract All Sentences from the Documents and from all Words stem them and add them to the words dictionary.
+rpus = []</p>
+<p>= 1
+r doc in docs:
+  index(doc.fnm, n)
+  n += 1</p>
+<p>Define a Pool of worker processes equal to the number of Cores we have.
+g("Starting a Pool of " + str(multiprocessing.cpu_count()) + " Workers")
+ol = multiprocessing.Pool(processes=multiprocessing.cpu_count())</p>
+<p>g("Applying the extractWords via pool.map")
+lWords = pool.map(extractWords, docs)</p>
+<p>r a in allWords:
+  outputFeatures(a.words, bag)
+  corpus.append(a.docu)</p>
+<p>ol.close()
+g("Corpus Created! Calculating TF.IDF Features Vector")</p>
+<p>atures = []</p>
+<p>g("Starting a Pool of " + str(multiprocessing.cpu_count()) + " Workers")
+ol = multiprocessing.Pool(processes=multiprocessing.cpu_count())</p>
+<p>g("Applying the calcTFIDF via pool.map")
+atures = pool.map(calcTFIDF, corpus)</p>
+<p>g("Features Generation Completed! Exporting Features to File")
+tputTFIDF(features, bag)</p>
+<p>ol.close()
+ol.join()</p>
+<p>g("Construction of the Features Matrix Concluded")
+g("Features Matrix is a " + str(len(docs)) + "x" + str(len(bag)) + " matrix")</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">datetime</span><span class="o">,</span> <span class="nn">codecs</span>
+<span class="kn">import</span> <span class="nn">theseus</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">from</span> <span class="nn">stemming.porter2</span> <span class="kn">import</span> <span class="n">stem</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;david&#39;</span>
+<span class="n">__doc__</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">Generate The Examples Matrix of Features</span>
+
+<span class="s">Input:</span>
+<span class="s">                A Folder with TXT files to generate the Matrix of Features X</span>
+<span class="s">                A bagOfWords file</span>
+
+<span class="s">Output:</span>
+<span class="s">                A features.txt matrix with the features of X</span>
+
+<span class="s">Usage:</span>
+<span class="s">                python generateFeatures.py &lt;DIR&gt; &lt;BagOfWords&gt;</span>
+
+<span class="s">Notes:</span>
+<span class="s">                This script requires the multiprocessing package to take advantage</span>
+<span class="s">                of all the cores existing in the computer. Therefore is advisable</span>
+<span class="s">                to have free memory on the machine and at least python 2.6.</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  
+</div>
+</body>
