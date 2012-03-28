@@ -61,10 +61,9 @@ def main():
                 f.write(unicode(item.link).encode("utf-8")+"\n") # Add this item to the downloaded URLS file
                 f.flush() # Let's flush the internal buffer
                 os.fsync(f.fileno()) # Let's force the write of all internal buffers to disk
-                time.sleep(int(sys.argv[2]));   # Wait TIMEOUT seconds to avoid DDoS blacklistings...
+                time.sleep(int(sys.argv[2]))   # Wait TIMEOUT seconds to avoid DDoS blacklistings...
     f.close()
 
 if __name__ == '__main__':
     if len(sys.argv)==3:
         main()
-

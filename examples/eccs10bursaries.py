@@ -62,15 +62,13 @@ def main():
         # 3.4 Let's add this document to the reports channel
         reports.addDocument(doc)
         docs.append(doc)
-        
-        
+
     # 4. Let's export the Domain to a File
     dom.exportDomain()
     
     # 5. Let's iterate over the reports Channel's Documents to calculate the score of each sentence
     phrases={}
-    
-    
+
     for document in reports.documents:
         print "="*40, "Processing ", document.fnm, "="*40
         for sentence in document.sentences:
@@ -84,8 +82,7 @@ def main():
                 sentence._wscore.append(value)
             # 5.2 Store the phrase and score
             phrases[sentence]=sentence._sscore
-            
-    
+
     # 6. Generate a sorted list of Sentences
     print "="*100
     newd=sorted(phrases.items(), key=itemgetter(1), reverse=True)

@@ -4,9 +4,10 @@ What is Theseus?
 
 Theseus is a python package that includes several modules to deal with webpage retrival and text processing.
 
-It is the baisis for the deployment of a system based on bash scripts and python
+It is the basis for the deployment of a system based on bash scripts and python
 
-It his the responsible for collecting and processing newspaper pages for the observatorium (see details at http://theobservatorium.eu )
+It his the responsible for collecting and processing newspaper pages for
+[the observatorium](http://theobservatorium.eu )
 
 What will Theseus be at version 1.0?
 ====================================
@@ -17,3 +18,8 @@ Theseus will end up (eventually) being made of 4 groups of programs/modules/scri
 * **Processor** (for processing of textual data)
 * **Utils** (acessory methods and utilities for pre and post processing)
 * **Examples** (To help users to start using **theseus**)
+
+Contributors
+============
+
+[David Rodrigues](http://www.davidrodrigues.org)

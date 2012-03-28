@@ -1,5 +1,5 @@
 __author__ = 'David Rodrigues <david@sixhat.net>'
-__version__ = '0.7.0'
+__version__ = '0.7.3'
 __license__ = """Copyright (c) 2010, David Rodrigues <david@sixhat.net> 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
