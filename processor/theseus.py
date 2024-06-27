@@ -118,17 +118,17 @@ class Sentence:
         self.cleaned = cleanStringNoDel(self.text)
         self.words = self.text.split()
         self.cleanedWords = []
-        try:
-            if self.language == "en":
-                stop = enClean()
-            elif self.language == "pt":
-                stop = ptClean()
-            elif self.language == "es":
-                stop = esClean()
-            elif self.language == "fr":
-                stop = frClean()
-        except:
-            raise NotImplementedError("Language not set! Use another Language")
+        if self.language == "en":
+            stop = enClean()
+        elif self.language == "pt":
+            stop = ptClean()
+        elif self.language == "es":
+            stop = esClean()
+        elif self.language == "fr":
+            stop = frClean()
+        else:
+            print("Language not set! Use another Language")
+            return
         for word in self.cleaned.split():
             if word not in stop:
                 self.cleanedWords.append(word)
@@ -154,13 +154,9 @@ class Domain:
             self.addWord(w)
 
     def exportDomain(self):
-        try:
-            f = open(self.label + ".dom", 'w')
-            for w in self.words:
-                f.write(w + "\n")
-            f.close()
-        except:
-            print("Couldn't export Domain " + self.label)
+        with open(self.label + ".dom", 'w') as file:
+            for word in self.words:
+                file.write(word + "\n")
 
 
 class Channel:

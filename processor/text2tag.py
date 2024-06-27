@@ -112,8 +112,8 @@ def process(infile):
             smooth[it] = numpy.sum(score[(it - sradius):(it + sradius)]) / (
             2 * sradius + 1)
 
-    mscore = numpy.mean(score)
-    sscore = numpy.std(score)
+#    mscore = numpy.mean(score)
+#    sscore = numpy.std(score)
     msmooth = numpy.mean(smooth)
     ssmooth = numpy.std(smooth)
 
