@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
+set -xe
 
-for f in `find . -name "*.py" ! -name "__*"`
-    do
-    pycco -p $f
-done
+if [ -d "docs" ] 
+    then
+        rm -rf docs/
+fi
 
+pycco -i ./**/*.py
