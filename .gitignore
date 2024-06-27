@@ -1,0 +1,6 @@
+*.pyc
+*.bak
+.DS_Store
+.ipynb_checkpoints/
+.swp
+*.log

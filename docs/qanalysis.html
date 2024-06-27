@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>qanalysis.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>qanalysis.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;david&#39;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;0.1.1&#39;</span>
+<span class="n">__log__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">An Generic Q-analysis collection of scripts</span>
+
+<span class="s2">* Shared Vertex Matrix</span>
+<span class="s2">* Incidence Matrix</span>
+<span class="s2">* save to JSON</span>
+<span class="s2">* load to JSON</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">codecs</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">usage</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    USAGE:</span>
+<span class="s2">        python qanalysis.py &lt;file.tags&gt; &lt;separator&gt;</span>
+
+<span class="s2">    Example:</span>
+<span class="s2">        python qanalysis guardian.tags :</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Save graph to json object file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">json_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="s1">&#39;graph.json&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Load graph from json object file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">load_graph</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s1">&#39;graph.json&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">graph</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Loads the edge file into sets A and B and a graph and a reverse graph</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">load_edge_file</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">f</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># direct graph</span>
+    <span class="n">rgraph</span> <span class="o">=</span> <span class="p">{}</span>   <span class="c1"># reverse graph</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
+        <span class="n">el</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">ot</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">el</span> <span class="o">==</span> <span class="s2">&quot;ACEP&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ot</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>direct graph</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="n">el</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">:</span>
+            <span class="n">A</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">el</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">el</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">el</span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">el</span><span class="p">][</span><span class="s1">&#39;connected_to&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">ot</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">el</span><span class="p">][</span><span class="s1">&#39;connected_to&#39;</span><span class="p">]:</span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">el</span><span class="p">][</span><span class="s1">&#39;connected_to&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ot</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>reverse graph</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="n">ot</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rgraph</span><span class="p">:</span>
+            <span class="n">rgraph</span><span class="p">[</span><span class="n">ot</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">rgraph</span><span class="p">[</span><span class="n">ot</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ot</span>
+            <span class="n">rgraph</span><span class="p">[</span><span class="n">ot</span><span class="p">][</span><span class="s1">&#39;connected_to&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">el</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rgraph</span><span class="p">[</span><span class="n">ot</span><span class="p">][</span><span class="s1">&#39;connected_to&#39;</span><span class="p">]:</span>
+            <span class="n">rgraph</span><span class="p">[</span><span class="n">ot</span><span class="p">][</span><span class="s1">&#39;connected_to&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ot</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">B</span><span class="p">:</span>
+            <span class="n">B</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ot</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="n">A</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="n">B</span><span class="p">,</span> <span class="s1">&#39;graph&#39;</span><span class="p">:</span> <span class="n">graph</span><span class="p">,</span> <span class="s1">&#39;rgraph&#39;</span><span class="p">:</span> <span class="n">rgraph</span><span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Computes the incidence matrix from a graph object</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">calc_incidence_matrix</span><span class="p">(</span><span class="n">graph</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">I</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-- computing Incidence Matrix - shape&quot;</span><span class="p">,</span> <span class="n">I</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="s1">&#39;graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;connected_to&#39;</span><span class="p">]:</span>
+            <span class="n">sl</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">I</span><span class="p">[</span><span class="n">sl</span><span class="p">,</span> <span class="n">sc</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>print I</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">numpy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;incidence.txt&quot;</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%1d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">I</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>From a graph object and the incidence matrix,</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">calc_shared_vertex_matrix</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">incidence</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <pre><code>computes the shared face matrix.
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">incidence</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">incidence</span> <span class="o">=</span> <span class="n">calc_incidence_matrix</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+
+    <span class="n">SVM</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-- computing Shared Face Matrix - shape &quot;</span><span class="p">,</span> <span class="n">SVM</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">incidence</span><span class="p">)):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>print &ldquo;&ndash; processing line nr. &ldquo;, line</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">incidence</span><span class="p">)):</span>
+            <span class="n">SVM</span><span class="p">[</span><span class="n">line</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">incidence</span><span class="p">[</span><span class="n">line</span><span class="p">,</span> <span class="p">:],</span> <span class="n">incidence</span><span class="p">[</span><span class="n">col</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="n">SVM</span><span class="p">[</span><span class="n">col</span><span class="p">,</span> <span class="n">line</span><span class="p">]</span> <span class="o">=</span> <span class="n">SVM</span><span class="p">[</span><span class="n">line</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>print SVM</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">numpy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s1">&#39;shared_face.txt&#39;</span><span class="p">,</span> <span class="n">SVM</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%1d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">SVM</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <h1>---- Program starts running here parsing command line options&hellip;</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Theseus Q-analysis Processor &#39;</span>\
+                <span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="n">__version__</span><span class="p">,</span>
+    <span class="n">epilog</span><span class="o">=</span><span class="s2">&quot;[*] - Q-analysis is alpha state. Be&quot;</span>\
+           <span class="s2">&quot; careful with its use.&quot;</span><span class="p">)</span>
+
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-t&#39;</span><span class="p">,</span> <span class="s1">&#39;--tagfile&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Tag file to load&#39;</span><span class="p">,</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;--sep&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Tag file Separator (defaults to : )&#39;</span><span class="p">,</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                    <span class="n">default</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-j&#39;</span><span class="p">,</span> <span class="s1">&#39;--jsonfile&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;JSON file to load&#39;</span><span class="p">,</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--version&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;version&#39;</span><span class="p">,</span>
+                    <span class="n">version</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(prog)s</span><span class="s1"> &#39;</span> <span class="o">+</span> <span class="n">__version__</span><span class="p">)</span>
+
+<span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <h1>Let&rsquo;s have an empty graph</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">g</span> <span class="o">=</span> <span class="p">{}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <h1>Command line options are parsed so now let&rsquo;s act on them:</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">tagfile</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">jsonfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">load_graph</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">tagfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">load_edge_file</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">tagfile</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">jsonfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">jsonfile</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <h1>Here we have the Graph (g) ready to do calculations on top of.</h1>
+<h1>simplicial complex</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">json_graph</span><span class="p">(</span><span class="n">g</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <h1>incidence matrix</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">I</span> <span class="o">=</span> <span class="n">calc_incidence_matrix</span><span class="p">(</span><span class="n">g</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <h1>Shared Vertex Matrix</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">SVM</span> <span class="o">=</span> <span class="n">calc_shared_vertex_matrix</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <h1>Algoritmo para calcular os simlex de diferentes q-order e as q-chains</h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-- Incidence Matrix&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">I</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-- Shared Vertex Matrix&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">SVM</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>print &ldquo;Maximum value of SVM &ldquo;, SVM.max()
+print &ldquo;Mean value of SVM &ldquo;, SVM.mean()</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">calculate_sets_q</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+    <span class="nb">all</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sets</span><span class="p">)):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>print &ldquo;&ndash; %d&rdquo; %x</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sets</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="c1">#and sets[x] not in all:</span>
+            <span class="n">comp</span> <span class="o">=</span> <span class="n">sets</span><span class="p">[</span><span class="n">x</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <h1>First check to see if this comp is a subset of a final (all)</h1>
+<p>set, this meaning that we don&rsquo;t need to compute it.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">b</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">all</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">comp</span> <span class="o">&lt;=</span> <span class="n">a</span><span class="p">:</span> <span class="c1"># equivalent to comp.issubset(a)</span>
+                    <span class="n">b</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">b</span><span class="p">):</span>
+                <span class="k">continue</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>the component that we ara analysing now isn&rsquo;t part of a
+component yet so we need to union it with others
+print &ldquo;&ndash; initial&rdquo; , comp</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sets</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">comp</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">comp</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">s</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>print &ldquo;&ndash; union with&rdquo;,s</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="n">comp</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>print comp</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <p>print &ldquo;&ndash; FULL HOUSE&rdquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                        <span class="k">return</span> <span class="p">[</span><span class="n">comp</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">comp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">all</span><span class="p">:</span>
+                <span class="nb">all</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">all</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">areConnected</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">a1</span><span class="p">[</span><span class="s1">&#39;connected_to&#39;</span><span class="p">])</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">b1</span><span class="p">[</span><span class="s1">&#39;connected_to&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">b</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">SVM</span><span class="o">.</span><span class="n">max</span><span class="p">()):</span>
+    <span class="n">sets</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-- </span><span class="si">%d</span><span class="s2">-connected Matrix&quot;</span> <span class="o">%</span> <span class="n">q</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>print SVM*(SVM&gt;=(q+1))</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">SVM</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">l</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">sets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <p>print sets
+print set(SVM)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-- q=&quot;</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">calculate_sets_q</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">g</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="s2">&quot;n.components:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">el</span><span class="p">)]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-- &quot;</span> <span class="o">+</span> <span class="s2">&quot; ::: &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <p>Export network in a readable format</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">outf</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="s1">&#39;-</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">getppid</span><span class="p">())</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">el</span><span class="p">)]</span>
+
+        <span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)):</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="s1">&#39;graph&#39;</span><span class="p">][</span><span class="n">out</span><span class="p">[</span><span class="n">x</span><span class="p">]]</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="s1">&#39;graph&#39;</span><span class="p">][</span><span class="n">out</span><span class="p">[</span><span class="n">y</span><span class="p">]]</span>
+                <span class="k">if</span> <span class="n">areConnected</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+                    <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="n">y</span><span class="p">])</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <p>nx.write_pajek(G, outf+&rsquo;.net&rsquo;)
+nx.write_weighted_edgelist(G, outf+&rsquo;.edge&rsquo;, delimiter=&rsquo;,&rsquo;)
+nx.write_gexf(G, outf+&rsquo;.gexf&rsquo;)
+nx.write_gml(G, outf+&rsquo;.gml&rsquo;)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">nx</span><span class="o">.</span><span class="n">write_graphml</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">outf</span> <span class="o">+</span> <span class="s1">&#39;.graphml&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

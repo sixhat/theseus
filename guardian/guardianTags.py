@@ -26,7 +26,7 @@ for line in f:
 
 # Create an empty  Graph
 G = networkx.Graph()
-for doc in docs.items():
+for doc in list(docs.items()):
     #G.add_nodes_from(doc[1])
 
     for noi in doc[1]:
@@ -40,8 +40,8 @@ for doc in docs.items():
 for e in G.edges():
     G.edge[e[0]][e[1]]['weight'] /= 2
 
-print len(G.nodes())
-print len(G.edges())
+print(len(G.nodes()))
+print(len(G.edges()))
 
 networkx.write_pajek(G, 'guardianTags.net')
 networkx.write_weighted_edgelist(G, 'guardianTags.edge', delimiter=',')
@@ -54,7 +54,7 @@ networkx.write_graphml(G,'guardianTags.graphml')
 
 
 for ed in G.edges():
-    print G.nodes().index(ed[0]), G.nodes().index(ed[1])
+    print(G.nodes().index(ed[0]), G.nodes().index(ed[1]))
 
 
 

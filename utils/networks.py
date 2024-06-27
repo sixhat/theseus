@@ -5,7 +5,7 @@ import random
 import argparse
 
 def net_arenas(N=256, z1=13, z2=4, zout=1):
-    nodes=range(N)
+    nodes=list(range(N))
     edges=[]
     cs = N/4
     ss = cs/4
@@ -31,7 +31,7 @@ def net_arenas(N=256, z1=13, z2=4, zout=1):
             edges.append((el,ot))
 
 
-    print edges
+    print(edges)
 
 
     return edges

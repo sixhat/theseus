@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
-from __future__ import division
+
 
 __author__ = 'David M.S. Rodrigues <dmsrs@iscte.pt>'
 
@@ -27,7 +27,7 @@ import os
 import sys
 import datetime
 import codecs
-import theseus
+from . import theseus
 import glob
 from stemming.porter2 import stem
 from operator import itemgetter
@@ -38,7 +38,7 @@ def log(st):
     f = open(str(os.getpid()) + '-bagOfwords.log', 'a')
     f.write(s + "\n")
     f.close()
-    print s
+    print(s)
 
 
 def outputBagWords(wds, hist=True):
@@ -58,7 +58,7 @@ def outputBagWords(wds, hist=True):
 
 # TODO Validate ARGUMENTS HERE
 if len(sys.argv) != 3 and len(sys.argv) != 2:
-    print __doc__
+    print(__doc__)
     sys.exit(1)
 
 path = sys.argv[1]
@@ -105,6 +105,6 @@ for doc in docs:
                     words[stemed] = 1
 
 log("Stemming and word Bag Histogram constructed")
-words = sorted(words.items(), key=itemgetter(1), reverse=True)
+words = sorted(list(words.items()), key=itemgetter(1), reverse=True)
 
 outputBagWords(words)

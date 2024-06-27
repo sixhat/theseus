@@ -10,7 +10,6 @@ that are archived in a folder ./TXT
 Text Files are named 01.txt ... 11.txt
 """
 
-import sys
 import os
 import theseus.processor.theseus as theseus
 from operator import itemgetter
@@ -44,7 +43,7 @@ def main():
         # 3.1 - Read File
         f=open(path+file,'r')
         # 3.1.1 Pay attention to encoding problems with text. In this case we convert everything to utf8
-        txt=unicode(f.read(), 'utf8')
+        txt=str(f.read(), 'utf8')
         f.close()
         
         # 2 - Create new DocNode
@@ -70,9 +69,9 @@ def main():
     phrases={}
 
     for document in reports.documents:
-        print "="*40, "Processing ", document.fnm, "="*40
+        print("="*40, "Processing ", document.fnm, "="*40)
         for sentence in document.sentences:
-            print sentence.text
+            print(sentence.text)
             # 5.1 Calculate the score of each sentence (_sscore) and also the word score (_wscore)
             sentence._sscore=0.0
             sentence._wscore=[]
@@ -84,11 +83,11 @@ def main():
             phrases[sentence]=sentence._sscore
 
     # 6. Generate a sorted list of Sentences
-    print "="*100
-    newd=sorted(phrases.items(), key=itemgetter(1), reverse=True)
+    print("="*100)
+    newd=sorted(list(phrases.items()), key=itemgetter(1), reverse=True)
     
     for ph,sc in newd:
-        print sc,"\t"+ph.text
+        print(sc,"\t"+ph.text)
     
 
 if __name__ == '__main__':

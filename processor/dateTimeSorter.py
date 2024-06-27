@@ -1,6 +1,8 @@
 # encoding: utf-8
-import time, datetime
-import os, sys
+import time
+import datetime
+import os
+import sys
 import glob
 
 __author__ = 'David Rodrigues'
@@ -22,7 +24,7 @@ def log(st):
     f = open(str(os.getpid()) + '-cluster.log', 'a')
     f.write(s + "\n")
     f.close()
-    print s
+    print(s)
 
 
 def compareFiles(x, y):
@@ -44,7 +46,7 @@ def compareFiles(x, y):
 # Read Files
 # TODO Validate ARGUMENTS HERE
 if len(sys.argv) != 3:
-    print __doc__
+    print(__doc__)
     sys.exit(1)
 
 path = sys.argv[1]
@@ -61,4 +63,4 @@ total = len(files)
 
 for n in range(1, total + 1):
     str = 'f-%0.5d.txt' % n
-    print str, files[n - 1]
+    print(str, files[n - 1])

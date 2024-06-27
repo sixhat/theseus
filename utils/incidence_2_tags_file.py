@@ -1,15 +1,14 @@
+import argparse
+
 __author__ = 'david'
 """
 Converts an Incidence matrix to a tags file
 """
 
-import   argparse
-
-
 parser = argparse.ArgumentParser(description='Convert an Incidence matrix to'\
                                              'a tags file')
 
-parser.add_argument('incidence', type=file,
+parser.add_argument('incidence', type=open,
                     help='The Incidence Matrix File, '\
                          'can have header and rows. This will try to detect '\
                          ''\
@@ -34,10 +33,10 @@ for li in args.incidence:
     sp = li.strip().split(args.sep)
     if line == 0:
         if sp[0].isdigit():
-            print "-- This looks like an unlabeled matrix"
+            print("-- This looks like an unlabeled matrix")
             labels = False
         else:
-            print "-- This looks like a labeled matrix"
+            print("-- This looks like a labeled matrix")
             labels = True
             lab = sp[1:]
             line += 1
@@ -47,14 +46,14 @@ for li in args.incidence:
         for el in range(len(els)):
             if els[el] > 0:
                 st = sp[0] + args.sep + lab[el]
-                print st
+                print(st)
                 fou.write(st + '\n')
     else:
-        els = range(len(sp))
+        els = list(range(len(sp)))
         for el in els:
             if int(sp[el]) > 0:
                 st = str(line) + args.sep + str(el)
-                print st
+                print(st)
                 fou.write(st + '\n')
     line += 1
 

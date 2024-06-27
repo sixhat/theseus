@@ -6,7 +6,6 @@ Generate a simple Bipartite Tag Graph
 """
 __version__="0.1.0"
 
-import sys
 import random
 import argparse
 
@@ -37,8 +36,8 @@ nb = args.b
 deg = 2*args.d
 
 
-setA = range(na);
-setB = range(na, (na + nb))
+setA = list(range(na))
+setB = list(range(na, (na + nb)))
 
 
 edges=[]
@@ -51,7 +50,7 @@ for a in setA:
 
 writeTags(edges, args.outfile)
 
-print "Graph saved to", args.outfile
+print("Graph saved to", args.outfile)
 
 
 

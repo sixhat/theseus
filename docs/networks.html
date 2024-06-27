@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>networks.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>networks.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;david&#39;</span>
+
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">argparse</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">net_arenas</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">z1</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">z2</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">zout</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">nodes</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+    <span class="n">edges</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">cs</span> <span class="o">=</span> <span class="n">N</span><span class="o">/</span><span class="mi">4</span>
+    <span class="n">ss</span> <span class="o">=</span> <span class="n">cs</span><span class="o">/</span><span class="mi">4</span>
+
+    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>z1</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">z1</span><span class="p">):</span>
+            <span class="n">ot</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">el</span><span class="o">==</span><span class="n">ot</span> <span class="ow">or</span> <span class="n">el</span><span class="o">/</span><span class="n">ss</span> <span class="o">!=</span> <span class="n">ot</span><span class="o">/</span><span class="n">ss</span><span class="p">:</span>
+                <span class="n">ot</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+            <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">el</span><span class="p">,</span><span class="n">ot</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>z2</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">z2</span><span class="p">):</span>
+            <span class="n">ot</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">el</span><span class="o">==</span><span class="n">ot</span> <span class="ow">or</span> <span class="n">el</span><span class="o">/</span><span class="n">cs</span> <span class="o">!=</span> <span class="n">ot</span><span class="o">/</span><span class="n">cs</span> <span class="ow">or</span> <span class="n">el</span><span class="o">/</span><span class="n">ss</span> <span class="o">==</span> <span class="n">ot</span><span class="o">/</span><span class="n">ss</span><span class="p">:</span>
+                <span class="n">ot</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+            <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">el</span><span class="p">,</span><span class="n">ot</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>zout</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">zout</span><span class="p">):</span>
+            <span class="n">ot</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">el</span><span class="o">==</span><span class="n">ot</span> <span class="ow">or</span> <span class="n">el</span><span class="o">/</span><span class="n">cs</span> <span class="o">==</span> <span class="n">ot</span><span class="o">/</span><span class="n">cs</span><span class="p">:</span>
+                <span class="n">ot</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+            <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">el</span><span class="p">,</span><span class="n">ot</span><span class="p">))</span>
+
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+
+
+    <span class="k">return</span> <span class="n">edges</span>
+
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Create an Arenas Network&#39;</span><span class="p">)</span>
+
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;z1&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;z2&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;zout&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+<span class="n">edges</span> <span class="o">=</span> <span class="n">net_arenas</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">z1</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">z2</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">zout</span><span class="p">)</span>
+
+<span class="n">G</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+<span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+
+<span class="n">nx</span><span class="o">.</span><span class="n">write_graphml</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="s1">&#39;testGRaph.graphml&#39;</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

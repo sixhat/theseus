@@ -14,7 +14,7 @@ Visit http://theobservatorium.eu/ for the latest version
 ..  [Ishzuka2002] Ishizuka, M. (2001). Emerging Topic Tracking System. Proceedings Third International Workshop on Advanced Issues of E-Commerce and Web-Based Information Systems. WECWIS 2001, 2-11. IEEE Comput. Soc. doi: 10.1109/WECWIS.2001.933900
 
 """
-from __future__ import division
+
 import math
 from stemming.porter2 import stem
 
@@ -50,8 +50,8 @@ class DocNode:
         """
         Extract all the sentences of the document
         """
-        phraseSeparator = u".!?¡¿;:"
-        breaker = u"+~&"
+        phraseSeparator = ".!?¡¿;:"
+        breaker = "+~&"
 
         #remove new lines and tabs
         temp1 = self.txt.replace("\t", " ")
@@ -128,7 +128,7 @@ class Sentence:
             elif self.language == "fr":
                 stop = frClean()
         except:
-            raise NotImplemented("Language not set! Use another Language")
+            raise NotImplementedError("Language not set! Use another Language")
         for word in self.cleaned.split():
             if word not in stop:
                 self.cleanedWords.append(word)
@@ -160,7 +160,7 @@ class Domain:
                 f.write(w + "\n")
             f.close()
         except:
-            print "Couldn't export Domain " + self.label
+            print("Couldn't export Domain " + self.label)
 
 
 class Channel:
@@ -207,10 +207,10 @@ def cleanStringNoDel(s1):
     """
     Cleans strings from unauthorized letters
     """
-    signs = u'\'\"\v\t\a\b\f\r/|\\!.-?¿¡:,_+"\n'
-    letters = u'abcdefghijklmnopqrstuvwxyz áàéèíìóòúù äëïöü ãõñç'
+    signs = '\'\"\v\t\a\b\f\r/|\\!.-?¿¡:,_+"\n'
+    letters = 'abcdefghijklmnopqrstuvwxyz áàéèíìóòúù äëïöü ãõñç'
     s1 = s1.lower()
-    ot = u''
+    ot = ''
     for l in s1:
         if l in signs:
             ot += " "
@@ -227,10 +227,10 @@ def cleanString(s1):
     """
     Cleans strings from unauthorized letters
     """
-    signs = u'!.-?¿¡:,_+"\n'
-    letters = u'abcdefghijklmnopqrstuvwxyz áàéèíìóòúù äëïöü ãõñç'
+    signs = '!.-?¿¡:,_+"\n'
+    letters = 'abcdefghijklmnopqrstuvwxyz áàéèíìóòúù äëïöü ãõñç'
     s1 = s1.lower()
-    ot = u''
+    ot = ''
     for l in s1:
         if l in signs:
             ot += " "
@@ -381,7 +381,7 @@ def clusterHist(clst):
                 words[wd] = 1
             else:
                 words[wd] += 1
-    return sorted(words.items(), key=lambda (k, v): (v, k), reverse=True)
+    return sorted(list(words.items()), key=lambda k_v: (k_v[1], k_v[0]), reverse=True)
 
 
 def enClean():
@@ -412,11 +412,11 @@ def ptClean():
     """
     Portuguese Stop Words
     """
-    preps = ['a', 'ante', u'após', u'até', 'com', 'contra', 'de', 'desde',
-             u'é', 'em', 'entre', 'para', 'per', 'perante', 'por', 'sem',
-             'sob', 'sobre', u'trás', 'segundo']
-    pronomes = ['eu', 'tu', 'ele', 'ela', u'nós', u'vós', 'eles', 'elas']
-    artigos = ['a', 'o', 'as', 'os', 'aos', u'às', 'de', 'do', 'dos',
+    preps = ['a', 'ante', 'após', 'até', 'com', 'contra', 'de', 'desde',
+             'é', 'em', 'entre', 'para', 'per', 'perante', 'por', 'sem',
+             'sob', 'sobre', 'trás', 'segundo']
+    pronomes = ['eu', 'tu', 'ele', 'ela', 'nós', 'vós', 'eles', 'elas']
+    artigos = ['a', 'o', 'as', 'os', 'aos', 'às', 'de', 'do', 'dos',
                'da', 'das']
     outros = ['é', 'que', 'quem', 'como', 'uma', 'um']
     out = ['no', 'na', 'nos', 'nas']
@@ -433,38 +433,38 @@ def esClean():
     
     obtained from http://www.ranks.nl/stopwords/spanish.html
     """
-    return [u'un', u'una', u'unas', u'unos', u'uno', u'sobre', u'todo',
-            u'también', u'tras', u'otro', u'algún', u'alguno', u'alguna',
-            u'algunos', u'algunas', u'ser', u'es', u'soy', u'eres',
-            u'somos', u'sois', u'estoy', u'esta', u'estamos', u'estais',
-            u'estan', u'como', u'en', u'para', u'atras', u'porque', u'por qué',
-            u'estado', u'estaba', u'ante', u'antes',
-            u'siendo', u'ambos', u'pero', u'por', u'poder', u'puede', u'puedo',
-            u'podemos', u'podeis', u'pueden', u'fui', u'fue', u'fuimos',
-            u'fueron', u'hacer', u'hago', u'hace', u'hacemos'
-        , u'haceis', u'hacen', u'cada', u'fin', u'incluso', u'primero 	desde'
-        , u'conseguir', u'consigo', u'consigue', u'consigues', u'conseguimos',
-            u'consiguen', u'ir', u'voy', u'va',
-            u'vamos', u'vais', u'van', u'vaya', u'gueno', u'ha', u'tener',
-            u'tengo', u'tiene', u'tenemos', u'teneis', u'tienen', u'el', u'la',
-            u'lo', u'las', u'los', u'su', u'aqui', u'mio',
-            u'tuyo', u'ellos', u'ellas', u'nos', u'nosotros', u'vosotros',
-            u'vosotras', u'si', u'dentro', u'solo', u'solamente', u'saber',
-            u'sabes', u'sabe', u'sabemos', u'sabeis', u'saben',
-            u'ultimo', u'largo', u'bastante', u'haces', u'muchos', u'aquellos',
-            u'aquellas', u'sus', u'entonces', u'tiempo', u'verdad',
-            u'verdadero', u'verdadera 	cierto', u'ciertos',
-            u'cierta', u'ciertas', u'intentar', u'intento', u'intenta',
-            u'intentas', u'intentamos', u'intentais', u'intentan', u'dos',
-            u'bajo', u'arriba', u'encima', u'usar', u'uso', u'usas'
-        , u'usa', u'usamos', u'usais', u'usan', u'emplear', u'empleo',
-            u'empleas', u'emplean', u'ampleamos', u'empleais', u'valor', u'muy'
-        , u'era', u'eras', u'eramos', u'eran', u'modo',
-            u'bien', u'cual', u'cuando', u'donde', u'mientras', u'quien',
-            u'con', u'entre', u'sin', u'trabajo', u'trabajar', u'trabajas',
-            u'trabaja', u'trabajamos', u'trabajais', u'trabajan'
-        , u'podria', u'podrias', u'podriamos', u'podrian', u'podriais', u'yo',
-            u'aquel']
+    return ['un', 'una', 'unas', 'unos', 'uno', 'sobre', 'todo',
+            'también', 'tras', 'otro', 'algún', 'alguno', 'alguna',
+            'algunos', 'algunas', 'ser', 'es', 'soy', 'eres',
+            'somos', 'sois', 'estoy', 'esta', 'estamos', 'estais',
+            'estan', 'como', 'en', 'para', 'atras', 'porque', 'por qué',
+            'estado', 'estaba', 'ante', 'antes',
+            'siendo', 'ambos', 'pero', 'por', 'poder', 'puede', 'puedo',
+            'podemos', 'podeis', 'pueden', 'fui', 'fue', 'fuimos',
+            'fueron', 'hacer', 'hago', 'hace', 'hacemos'
+        , 'haceis', 'hacen', 'cada', 'fin', 'incluso', 'primero 	desde'
+        , 'conseguir', 'consigo', 'consigue', 'consigues', 'conseguimos',
+            'consiguen', 'ir', 'voy', 'va',
+            'vamos', 'vais', 'van', 'vaya', 'gueno', 'ha', 'tener',
+            'tengo', 'tiene', 'tenemos', 'teneis', 'tienen', 'el', 'la',
+            'lo', 'las', 'los', 'su', 'aqui', 'mio',
+            'tuyo', 'ellos', 'ellas', 'nos', 'nosotros', 'vosotros',
+            'vosotras', 'si', 'dentro', 'solo', 'solamente', 'saber',
+            'sabes', 'sabe', 'sabemos', 'sabeis', 'saben',
+            'ultimo', 'largo', 'bastante', 'haces', 'muchos', 'aquellos',
+            'aquellas', 'sus', 'entonces', 'tiempo', 'verdad',
+            'verdadero', 'verdadera 	cierto', 'ciertos',
+            'cierta', 'ciertas', 'intentar', 'intento', 'intenta',
+            'intentas', 'intentamos', 'intentais', 'intentan', 'dos',
+            'bajo', 'arriba', 'encima', 'usar', 'uso', 'usas'
+        , 'usa', 'usamos', 'usais', 'usan', 'emplear', 'empleo',
+            'empleas', 'emplean', 'ampleamos', 'empleais', 'valor', 'muy'
+        , 'era', 'eras', 'eramos', 'eran', 'modo',
+            'bien', 'cual', 'cuando', 'donde', 'mientras', 'quien',
+            'con', 'entre', 'sin', 'trabajo', 'trabajar', 'trabajas',
+            'trabaja', 'trabajamos', 'trabajais', 'trabajan'
+        , 'podria', 'podrias', 'podriamos', 'podrian', 'podriais', 'yo',
+            'aquel']
 
 
 def frClean():
@@ -473,23 +473,23 @@ def frClean():
     
     obtained from http://www.ranks.nl/stopwords/french.html
     """
-    return [u'alors', u'au', u'aucuns', u'aussi', u'autre', u'avant', u'avec',
-            u'avoir', u'bon', u'car', u'ce', u'cela', u'ces', u'ceux',
-            u'chaque', u'ci', u'comme', u'comment', u'dans',
-            u'des', u'du', u'dedans', u'dehors', u'depuis', u'deux', u'devrait'
-        , u'doit', u'donc', u'dos', u'droite', u'début', u'elle', u'elles',
-            u'en', u'encore', u'essai', u'est', u'et',
-            u'eu', u'fait', u'faites', u'fois', u'font', u'force', u'haut',
-            u'hors', u'ici', u'il', u'ils', u'je 	juste', u'la', u'le',
-            u'les', u'leur', u'là', u'ma', u'maintenant',
-            u'mais', u'mes', u'mine', u'moins', u'mon', u'mot', u'même', u'ni',
-            u'nommés', u'notre', u'nous', u'nouveaux', u'ou', u'où', u'par',
-            u'parce', u'parole', u'pas', u'personnes',
-            u'peut', u'peu', u'pièce', u'plupart', u'pour', u'pourquoi',
-            u'quand', u'que', u'quel', u'quelle', u'quelles', u'quels', u'qui',
-            u'sa', u'sans', u'ses', u'seulement', u'si',
-            u'sien', u'son', u'sont', u'sous', u'soyez 	sujet', u'sur',
-            u'ta', u'tandis', u'tellement', u'tels', u'tes', u'ton', u'tous',
-            u'tout', u'trop', u'très', u'tu', u'valeur',
-            u'voie', u'voient', u'vont', u'votre', u'vous', u'vu', u'ça',
-            u'étaient', u'état', u'étions', u'été', u'être']
+    return ['alors', 'au', 'aucuns', 'aussi', 'autre', 'avant', 'avec',
+            'avoir', 'bon', 'car', 'ce', 'cela', 'ces', 'ceux',
+            'chaque', 'ci', 'comme', 'comment', 'dans',
+            'des', 'du', 'dedans', 'dehors', 'depuis', 'deux', 'devrait'
+        , 'doit', 'donc', 'dos', 'droite', 'début', 'elle', 'elles',
+            'en', 'encore', 'essai', 'est', 'et',
+            'eu', 'fait', 'faites', 'fois', 'font', 'force', 'haut',
+            'hors', 'ici', 'il', 'ils', 'je 	juste', 'la', 'le',
+            'les', 'leur', 'là', 'ma', 'maintenant',
+            'mais', 'mes', 'mine', 'moins', 'mon', 'mot', 'même', 'ni',
+            'nommés', 'notre', 'nous', 'nouveaux', 'ou', 'où', 'par',
+            'parce', 'parole', 'pas', 'personnes',
+            'peut', 'peu', 'pièce', 'plupart', 'pour', 'pourquoi',
+            'quand', 'que', 'quel', 'quelle', 'quelles', 'quels', 'qui',
+            'sa', 'sans', 'ses', 'seulement', 'si',
+            'sien', 'son', 'sont', 'sous', 'soyez 	sujet', 'sur',
+            'ta', 'tandis', 'tellement', 'tels', 'tes', 'ton', 'tous',
+            'tout', 'trop', 'très', 'tu', 'valeur',
+            'voie', 'voient', 'vont', 'votre', 'vous', 'vu', 'ça',
+            'étaient', 'état', 'étions', 'été', 'être']

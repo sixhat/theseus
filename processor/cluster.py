@@ -1,5 +1,6 @@
 # coding=utf-8
-import os, sys
+import os
+import sys
 import datetime
 from numpy import   loadtxt, zeros, savetxt
 from scipy.cluster.vq import   vq, kmeans
@@ -36,11 +37,11 @@ def log(st):
     f = open(str(os.getpid()) + '-cluster.log', 'a')
     f.write(s + "\n")
     f.close()
-    print s
+    print(s)
 
 # TODO Validate ARGUMENTS HERE
 if len(sys.argv) < 3:
-    print __doc__
+    print(__doc__)
     sys.exit(1)
 
 Xfile = sys.argv[1]
@@ -56,16 +57,16 @@ if len(sys.argv) == 4:
     if len(rK) == 1:
         try:
             eK = int(rK[0])
-        except ValueError, TypeError:
+        except ValueError:
             pass
     if len(rK) == 2:
         try:
             sK = int(rK[0])
-        except ValueError, TypeError:
+        except ValueError:
             pass
         try:
             eK = int(rK[1])
-        except ValueError, TypeError:
+        except ValueError:
             pass
 
 ft = loadtxt(Xfile, skiprows=sK)
@@ -120,7 +121,7 @@ log("Starting Display")
 # publicação e Y o cluster?
 # O ideal será talvez utilizar o tkinter e o Canvas
 
-from Tkinter import *
+from tkinter import *
 
 root = Tk()
 root.title("Clustering " + str(len(labels)) + " examples in " +
@@ -132,8 +133,8 @@ bsize = 3
 
 wstep = (0.0 + largura) / (len(labels) + 1.0)
 hstep = altura / K
-print wstep
-print hstep
+print(wstep)
+print(hstep)
 
 c = Canvas(root, width=largura, height=altura + hstep / ex)
 c.pack()

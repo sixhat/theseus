@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>bagOfWords.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>bagOfWords.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;David M.S. Rodrigues &lt;dmsrs@iscte.pt&gt;&#39;</span>
+
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">For a list of TXT files create a bag of words of the k most used ones.</span>
+
+<span class="s2">Input: a TXT file directory</span>
+
+<span class="s2">Output: two files! a histogram of words and a bag of words choosen by</span>
+<span class="s2">        the scientists.</span>
+
+<span class="s2">        Usage: python bagOfWords.py &lt;TXT DIRECTORY&gt; [NUM_OF_WORDS]</span>
+
+<span class="s2">        It will output a hist.dat file and an words.dat file.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">__dependencies__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        This packages depends on some external libraries.</span>
+<span class="s2">        For Stemming we use the package &lt;stemming&gt; from</span>
+<span class="s2">        http://pypi.python.org/pypi/stemming/</span>
+
+<span class="s2">        Install with &quot;easy_install steamming&quot;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">theseus</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">from</span> <span class="nn">stemming.porter2</span> <span class="kn">import</span> <span class="n">stem</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">st</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()),</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">st</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;-bagOfwords.log&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">outputBagWords</span><span class="p">(</span><span class="n">wds</span><span class="p">,</span> <span class="n">hist</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;-bagwords.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">wds</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">w</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">hist</span><span class="p">:</span>
+        <span class="n">totalWords</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">wds</span><span class="p">])</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;-bagwords-hist.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span>
+                        <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">wds</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">w</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span> <span class="o">/</span> <span class="n">totalWords</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>TODO Validate ARGUMENTS HERE</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="vm">__doc__</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>check to see if path ends with slash (/)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
+    <span class="n">path</span> <span class="o">+=</span> <span class="s1">&#39;/&#39;</span>
+
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="n">nwords</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Start Processing&quot;</span><span class="p">)</span>
+
+<span class="n">words</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="n">dirList</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;*.txt&#39;</span><span class="p">]))</span>
+
+<span class="n">docs</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>READ FILES INTO DocNode Objects</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">dirList</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">theseus</span><span class="o">.</span><span class="n">DocNode</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">),</span> <span class="n">file</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">ttl</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;Problem reading file: &quot;</span> <span class="o">+</span> <span class="n">file</span> <span class="o">+</span> <span class="s2">&quot; -- &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">]))</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Total Files Read : &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Extract All Sentences from the Documents and from all Words
+stem them and add them to the words dictionary.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">extractSentences</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">stc</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">sentences</span><span class="p">:</span>
+        <span class="n">stc</span><span class="o">.</span><span class="n">cleanText</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">stc</span><span class="o">.</span><span class="n">cleanedWords</span><span class="p">:</span>
+            <span class="n">stemed</span> <span class="o">=</span> <span class="n">stem</span><span class="p">(</span><span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stemed</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">stemed</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+                    <span class="n">words</span><span class="p">[</span><span class="n">stemed</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">words</span><span class="p">[</span><span class="n">stemed</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Stemming and word Bag Histogram constructed&quot;</span><span class="p">)</span>
+<span class="n">words</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">words</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">outputBagWords</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

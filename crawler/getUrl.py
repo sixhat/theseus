@@ -10,9 +10,12 @@ Parses a downloaded RSS file and downloads all items in the Feed
 
 import sys
 import os
-import feedparser, time
+import feedparser
+import time
 import zlib
-import urllib2
+import urllib.request
+import urllib.error
+import urllib.parse
 
 def main():
     """
@@ -20,15 +23,13 @@ def main():
     """
     # Parse the downloaded rss.xml file
     d=feedparser.parse(str(sys.argv[1])+"/rss.xml")
-    
     urls=[] # The already downloaded list of URLS
-    
     # Let's see if the downloaded list is present and construct the urls list
     try:
         f=open(sys.argv[1]+'/urls.txt','r+')
         for line in f:
             urls.append(line.split()[0])
-    except Exception, e:
+    except Exception:
         f=open(sys.argv[1]+'/urls.txt','w')
 
     # Let's iterate over all entries in the parsed RSS
@@ -40,12 +41,12 @@ def main():
             except:
                 nome=time.strftime("%Y-%j_%H-%M-%S", time.gmtime())
 
-            cifra=str(zlib.adler32(str(unicode(item.link).encode("utf-8"))))
+            cifra=str(zlib.adler32(str(str(item.link).encode("utf-8"))))
             nome=nome+"_"+cifra+".html" # let's set the name of the output file based on the time
             
-            if unicode(item.link).encode("utf-8") not in urls:
+            if str(item.link).encode("utf-8") not in urls:
                
-                page=urllib2.build_opener()
+                page=urllib.request.build_opener()
                 page.addheaders = [('Referer', d.feed.link), ('User-agent','Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)')]
                 try:
                     r=page.open(item.link)
@@ -55,10 +56,10 @@ def main():
                     out.close()
                 except:
                     out2=open(sys.argv[1]+"/"+"notfound.txt", 'a')
-                    out2.write(unicode(item.link).encode("utf-8")+"\n")
+                    out2.write(str(item.link).encode("utf-8")+"\n")
                     out2.close()
                 
-                f.write(unicode(item.link).encode("utf-8")+"\n") # Add this item to the downloaded URLS file
+                f.write(str(item.link).encode("utf-8")+"\n") # Add this item to the downloaded URLS file
                 f.flush() # Let's flush the internal buffer
                 os.fsync(f.fileno()) # Let's force the write of all internal buffers to disk
                 time.sleep(int(sys.argv[2]))   # Wait TIMEOUT seconds to avoid DDoS blacklistings...

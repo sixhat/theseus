@@ -30,17 +30,17 @@ def main():
             if files.count(txt)==0:
                 files.append(txt)
             else:
-                print "Unlinking", filename
+                print("Unlinking", filename)
                 cl+=1
                 os.unlink(indir+filename)
     
     if cl > 0:
-        print "Cleaned", cl, "duplicates"
+        print("Cleaned", cl, "duplicates")
 
 if __name__ == '__main__':
     if len(sys.argv)==2:
         indir=sys.argv[1]
-        print "Setting In Dir to:", indir
+        print("Setting In Dir to:", indir)
         main()
     else:
-        print __doc__
+        print(__doc__)

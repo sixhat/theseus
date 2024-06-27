@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>extractUniqLabels.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>extractUniqLabels.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;david&#39;</span>
+<span class="vm">__doc__</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Extract Unique Labels&quot;&quot;&quot;</span>
+
+<span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+
+<span class="n">labels</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">lhist</span><span class="o">=</span><span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">s</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+    <span class="n">label</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+        <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">lhist</span><span class="p">:</span>
+        <span class="n">lhist</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lhist</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+
+<span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
+<span class="n">lhist</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">lhist</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lhist</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>theseus.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>theseus.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h1>theseus.py</h1>
+<p>A Python Library for text processing in The Observatorium project</p>
+<p>Visit http://theobservatorium.eu/ for the latest version</p>
+<p>.. rubric:: References
+..  [Bun2006] Bun, K., &amp; Ishizuka, M. (2006). Emerging topic tracking system in WWW. Knowledge-Based Systems, 19(3), 164-171. doi: 10.1016/j.knosys.2005.11.008.
+..  [Ishzuka2001] Ishizuka, M. (n.d.). Topic extraction from news archive using TF*PDF  algorithm. Proceedings of the Third International Conference on Web Information Systems Engineering, 2002. WISE 2002., 73-82. IEEE Comput. Sci. doi: 10.1109/WISE.2002.1181645.
+..  [Ishzuka2002] Ishizuka, M. (2001). Emerging Topic Tracking System. Proceedings Third International Workshop on Advanced Issues of E-Commerce and Web-Based Information Systems. WECWIS 2001, 2-11. IEEE Comput. Soc. doi: 10.1109/WECWIS.2001.933900</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">stemming.porter2</span> <span class="kn">import</span> <span class="n">stem</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">NotImplemented</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>The DocNode is the basic structue that olds each document in a corpus</p>
+<pre><code>* *idn* Id number of the node
+* *fnm* File name of the Document
+* *txt* Text of the Document
+* *ttl* Time to Live
+* *lang='en'* The language of the text, defaults to english
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">DocNode</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idn</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">fnm</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">txt</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">ttl</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s1">&#39;en&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idn</span> <span class="o">=</span> <span class="n">idn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fnm</span> <span class="o">=</span> <span class="n">fnm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txt</span> <span class="o">=</span> <span class="n">txt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ttl</span> <span class="o">=</span> <span class="n">ttl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">=</span> <span class="n">lang</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sentences</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terms</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Extract all the sentences of the document</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">extractSentences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">phraseSeparator</span> <span class="o">=</span> <span class="s2">&quot;.!?¡¿;:&quot;</span>
+        <span class="n">breaker</span> <span class="o">=</span> <span class="s2">&quot;+~&amp;&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>remove new lines and tabs</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">temp1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">txt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">temp1</span> <span class="o">=</span> <span class="n">temp1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">temp1</span> <span class="o">=</span> <span class="n">temp1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">temp1</span> <span class="o">=</span> <span class="n">temp1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">phraseSeparator</span><span class="p">:</span>
+            <span class="n">temp1</span> <span class="o">=</span> <span class="n">temp1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">el</span> <span class="o">+</span> <span class="n">breaker</span><span class="p">)</span>
+
+        <span class="n">temp1</span> <span class="o">=</span> <span class="n">temp1</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">breaker</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">stc</span> <span class="ow">in</span> <span class="n">temp1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stc</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">st1</span> <span class="o">=</span> <span class="n">Sentence</span><span class="p">(</span><span class="n">stc</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span><span class="p">)</span>
+                <span class="n">st1</span><span class="o">.</span><span class="n">cleanText</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">st1</span><span class="o">.</span><span class="n">cleanedWords</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">st1</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Stem the entire document by stemming each of the sentences in the document
+with a Porter Stemming algorithm (Note: English only)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">stemDoc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sentences</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">extractSentences</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sentences</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sentences</span><span class="p">:</span>
+                <span class="n">sentence</span><span class="o">.</span><span class="n">stemSentence</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>The Sentence is one of the building blocks of Documents</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Sentence</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">=</span> <span class="n">lang</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleaned</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">words</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanedWords</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stemedWords</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">=</span> <span class="n">lang</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sscore</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wscore</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Stem the sentence with the Porter Stemming algorithm</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">stemSentence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cleanedWords</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cleanText</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleanedWords</span><span class="p">:</span>
+                <span class="n">stemed</span> <span class="o">=</span> <span class="n">stem</span><span class="p">(</span><span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">stemed</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stemedWords</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">stemedWords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stemed</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Processes the raw text of a sentence:
+    * creates a <code>cleaned</code> text without unauthorized letters,
+    * creates a <code>words</code> list
+    * creates a <code>cleanedWords</code> list without <strong>stopwords</strong></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">cleanText</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">cleaned</span> <span class="o">=</span> <span class="n">cleanStringNoDel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">words</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanedWords</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;en&quot;</span><span class="p">:</span>
+                <span class="n">stop</span> <span class="o">=</span> <span class="n">enClean</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;pt&quot;</span><span class="p">:</span>
+                <span class="n">stop</span> <span class="o">=</span> <span class="n">ptClean</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;es&quot;</span><span class="p">:</span>
+                <span class="n">stop</span> <span class="o">=</span> <span class="n">esClean</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;fr&quot;</span><span class="p">:</span>
+                <span class="n">stop</span> <span class="o">=</span> <span class="n">frClean</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Language not set! Use another Language&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stop</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cleanedWords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>A Domain is a field with a collection of words and a label</p>
+<p>Domain words should all be lower capital and without stopwords!</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Domain</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">words</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">words</span> <span class="o">=</span> <span class="n">words</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">addWord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">addWords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ws</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">ws</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addWord</span><span class="p">(</span><span class="n">w</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">exportDomain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">+</span> <span class="s2">&quot;.dom&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">w</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t export Domain &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>A Channel contains all documents of a certain channel</p>
+<pre><code>* *label* is a string
+* *doc* is a DocNode
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Channel</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">documents</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">addDocument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>Calculates de jaccard index for two lists</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">jaccard</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">a1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span>
+    <span class="n">a2</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">a1</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">a2</span><span class="p">)))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">a1</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">a2</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <p>extractPhrases breaks a document into a sequence of phrases.</p>
+<p>XXX: We need to deal with numbers&hellip;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">extractPhrases</span><span class="p">(</span><span class="n">s1</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">blocks</span> <span class="o">=</span> <span class="s1">&#39;.:;!?&#39;</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
+        <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">)</span>
+    <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;||&quot;</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">)</span>
+    <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s1</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>Cleans strings from unauthorized letters</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">cleanStringNoDel</span><span class="p">(</span><span class="n">s1</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">signs</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\&#39;\&quot;\v\t\a\b\f\r</span><span class="s1">/|</span><span class="se">\\</span><span class="s1">!.-?¿¡:,_+&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">letters</span> <span class="o">=</span> <span class="s1">&#39;abcdefghijklmnopqrstuvwxyz áàéèíìóòúù äëïöü ãõñç&#39;</span>
+    <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">ot</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">s1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">signs</span><span class="p">:</span>
+            <span class="n">ot</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span>
+        <span class="k">elif</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">letters</span><span class="p">:</span>
+            <span class="n">ot</span> <span class="o">+=</span> <span class="n">l</span>
+    <span class="n">ot2</span> <span class="o">=</span> <span class="n">ot</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">ot</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">ot2</span><span class="p">:</span>
+        <span class="n">ot</span> <span class="o">+=</span> <span class="n">w</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+    <span class="k">return</span> <span class="n">ot</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <p>Cleans strings from unauthorized letters</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">cleanString</span><span class="p">(</span><span class="n">s1</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">signs</span> <span class="o">=</span> <span class="s1">&#39;!.-?¿¡:,_+&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">letters</span> <span class="o">=</span> <span class="s1">&#39;abcdefghijklmnopqrstuvwxyz áàéèíìóòúù äëïöü ãõñç&#39;</span>
+    <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">ot</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">s1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">signs</span><span class="p">:</span>
+            <span class="n">ot</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">letters</span><span class="p">:</span>
+            <span class="n">ot</span> <span class="o">+=</span> <span class="n">l</span>
+    <span class="n">ot2</span> <span class="o">=</span> <span class="n">ot</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">ot</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">ot2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">21</span><span class="p">):</span> <span class="c1"># Changed this to fit Cachopo2003 def.</span>
+            <span class="n">ot</span> <span class="o">+=</span> <span class="n">w</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+    <span class="k">return</span> <span class="n">ot</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      <p>Calculates the fraction of documents of the corpus that have a token</p>
+<pre><code>* *token* is a string               ex. 'word'
+* *corpus* is a ``list`` of ``lists``    ex.  ['this' 'is' 'a' 'word' 'document']['document' 'two']('this' 'is' 'a' 'word' 'document']['document' 'two'.html)
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">dtf</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">corpus</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">out</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">corpus</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">+=</span> <span class="mf">1.0</span>
+    <span class="k">return</span> <span class="n">out</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">corpus</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <p>Calculates the inverse document frequency of a token</p>
+<pre><code>* *token* is a string               ex. 'word'        
+* *corpus* is a ``list`` of ``lists``    ex.  ['this' 'is' 'a' 'word' 'document']['document' 'two']('this' 'is' 'a' 'word' 'document']['document' 'two'.html)
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">idf</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">corpus</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">dtf</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">corpus</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># Base 2 Logs?...</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      <p>Calculates the term frequency in a certain document (doc)</p>
+<pre><code>* *token* is a string   ex. 'word'
+* *doc* is a ``list``     ex. ['this' 'is' 'a' 'word' 'document']
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">tf</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">+</span> <span class="n">doc</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">token</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      <p>Calculates the Log Term Frequency in a certain document (doc)</p>
+<pre><code>* *token* is a string   ex. 'word'
+* *doc* is a ``list``     ex. ['this' 'is' 'a' 'word' 'document']
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">logtf</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-44'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-44'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">tf</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">doc</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      <p>Calculates the Term Frequency-Inverse Document Frequency of a token</p>
+<pre><code>* *token* is a string               ex. 'word'
+* *doc* is a ``list``                 ex. ['this' 'is' 'a' 'word' 'document']
+* *corpus* is a ``list`` of ``lists``    ex.  ['this' 'is' 'a' 'word' 'document']['document' 'two']('this' 'is' 'a' 'word' 'document']['document' 'two'.html)
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">tfidf</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">corpus</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-46'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">tf</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span> <span class="o">*</span> <span class="n">idf</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">corpus</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-47'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-47'>#</a>
+      </div>
+      <p>Calculates the Log Term Frequency-Inverse Document Frequency of a token</p>
+<pre><code>* *token* is a string               ex. 'word'
+* *doc* is a ``list``                 ex. ['this' 'is' 'a' 'word' 'document']
+* *corpus* is a ``list`` of ``lists``    ex.  ['this' 'is' 'a' 'word' 'document']['document' 'two']('this' 'is' 'a' 'word' 'document']['document' 'two'.html)
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">logtfidf</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">corpus</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">tf</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">idf</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">corpus</span><span class="p">)</span> <span class="c1"># Base 2 Logs</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-49'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-49'>#</a>
+      </div>
+      <p>Calculates the Binary existence of a token in a document (doc)</p>
+<p>returns 1 if token exists, 0 otherwise</p>
+<pre><code>* *token* is a string               ex. 'word'
+* *doc* is a ``list``                 ex. ['this' 'is' 'a' 'word' 'document']
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">binary</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-50'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
+      </div>
+      <p>Calculates the Term Frequency * Proportional Document Frequency (TF*PDF ) [Bun2006]<em> [Ishzuka2001]</em> [Ishzuka2002]_</p>
+<ul>
+<li><em>token</em> is a string</li>
+<li><em>channels</em> is a <code>list</code> of <code>Channel</code> </li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">tfpdf</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">channels</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-52'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-52'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">wj</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
+        <span class="n">njc</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">documents</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">terms</span><span class="p">:</span>
+                <span class="n">njc</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">wj</span> <span class="o">+=</span> <span class="n">normF</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">njc</span> <span class="o">/</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">documents</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">wj</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-53'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-53'>#</a>
+      </div>
+      <p>Calculates the normalized frequency of a term in a channel of documents</p>
+<p>see :py:meth:<code>tfpdf</code></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">normF</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-54'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-54'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">words</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">dom</span> <span class="o">=</span> <span class="n">Domain</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">channel</span><span class="o">.</span><span class="n">documents</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">phrase</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">sentences</span><span class="p">:</span>
+            <span class="n">words</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">phrase</span><span class="o">.</span><span class="n">cleanedWords</span><span class="p">)</span>
+            <span class="n">dom</span><span class="o">.</span><span class="n">addWords</span><span class="p">(</span><span class="n">phrase</span><span class="o">.</span><span class="n">cleanedWords</span><span class="p">)</span>
+
+    <span class="n">sumW</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">for</span> <span class="n">wd</span> <span class="ow">in</span> <span class="n">dom</span><span class="o">.</span><span class="n">words</span><span class="p">:</span>
+        <span class="n">sumW</span> <span class="o">+=</span> <span class="p">(</span><span class="n">words</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">wd</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)))</span> <span class="o">**</span> <span class="mf">2.0</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">words</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)))</span> <span class="o">/</span> <span class="n">sumW</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-55'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-55'>#</a>
+      </div>
+      <p>Takes a List of DocNodes and returns an histogram of the most common words</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">clusterHist</span><span class="p">(</span><span class="n">clst</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-56'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-56'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">words</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">clst</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-57'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-57'>#</a>
+      </div>
+      <p>print &rdquo; &ldquo;.join(doc.txt.split())</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">wds</span> <span class="o">=</span> <span class="n">cleanString</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">txt</span><span class="p">)</span>
+        <span class="n">wds</span> <span class="o">=</span> <span class="n">wds</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">wd</span> <span class="ow">in</span> <span class="n">wds</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wd</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+                <span class="n">words</span><span class="p">[</span><span class="n">wd</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">words</span><span class="p">[</span><span class="n">wd</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">words</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k_v</span><span class="p">:</span> <span class="p">(</span><span class="n">k_v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">k_v</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-58'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-58'>#</a>
+      </div>
+      <p>English Stop Words</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">enClean</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-59'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-59'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;able&#39;</span><span class="p">,</span> <span class="s1">&#39;about&#39;</span><span class="p">,</span> <span class="s1">&#39;across&#39;</span><span class="p">,</span> <span class="s1">&#39;after&#39;</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;almost&#39;</span><span class="p">,</span> <span class="s1">&#39;also&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;am&#39;</span><span class="p">,</span> <span class="s1">&#39;among&#39;</span><span class="p">,</span> <span class="s1">&#39;an&#39;</span><span class="p">,</span> <span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="s1">&#39;any&#39;</span><span class="p">,</span> <span class="s1">&#39;are&#39;</span><span class="p">,</span> <span class="s1">&#39;as&#39;</span><span class="p">,</span> <span class="s1">&#39;at&#39;</span><span class="p">,</span> <span class="s1">&#39;be&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;because&#39;</span><span class="p">,</span> <span class="s1">&#39;been&#39;</span><span class="p">,</span> <span class="s1">&#39;but&#39;</span><span class="p">,</span> <span class="s1">&#39;by&#39;</span><span class="p">,</span> <span class="s1">&#39;can&#39;</span><span class="p">,</span> <span class="s1">&#39;cannot&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;could&#39;</span><span class="p">,</span> <span class="s1">&#39;dear&#39;</span><span class="p">,</span> <span class="s1">&#39;did&#39;</span><span class="p">,</span> <span class="s1">&#39;do&#39;</span><span class="p">,</span> <span class="s1">&#39;does&#39;</span><span class="p">,</span> <span class="s1">&#39;either&#39;</span><span class="p">,</span> <span class="s1">&#39;else&#39;</span><span class="p">,</span> <span class="s1">&#39;ever&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;every&#39;</span><span class="p">,</span> <span class="s1">&#39;for&#39;</span><span class="p">,</span> <span class="s1">&#39;from&#39;</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="s1">&#39;got&#39;</span><span class="p">,</span> <span class="s1">&#39;had&#39;</span><span class="p">,</span> <span class="s1">&#39;has&#39;</span><span class="p">,</span> <span class="s1">&#39;have&#39;</span><span class="p">,</span> <span class="s1">&#39;he&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;her&#39;</span><span class="p">,</span> <span class="s1">&#39;hers&#39;</span><span class="p">,</span> <span class="s1">&#39;him&#39;</span><span class="p">,</span> <span class="s1">&#39;his&#39;</span><span class="p">,</span> <span class="s1">&#39;how&#39;</span><span class="p">,</span> <span class="s1">&#39;however&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;if&#39;</span><span class="p">,</span> <span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="s1">&#39;into&#39;</span><span class="p">,</span> <span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="s1">&#39;it&#39;</span><span class="p">,</span> <span class="s1">&#39;its&#39;</span><span class="p">,</span> <span class="s1">&#39;just&#39;</span><span class="p">,</span> <span class="s1">&#39;least&#39;</span><span class="p">,</span> <span class="s1">&#39;let&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;like&#39;</span><span class="p">,</span> <span class="s1">&#39;likely&#39;</span><span class="p">,</span> <span class="s1">&#39;may&#39;</span><span class="p">,</span> <span class="s1">&#39;me&#39;</span><span class="p">,</span> <span class="s1">&#39;might&#39;</span><span class="p">,</span> <span class="s1">&#39;most&#39;</span><span class="p">,</span> <span class="s1">&#39;must&#39;</span><span class="p">,</span> <span class="s1">&#39;my&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;neither&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;nor&#39;</span><span class="p">,</span> <span class="s1">&#39;not&#39;</span><span class="p">,</span> <span class="s1">&#39;of&#39;</span><span class="p">,</span> <span class="s1">&#39;off&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;often&#39;</span><span class="p">,</span> <span class="s1">&#39;on&#39;</span><span class="p">,</span> <span class="s1">&#39;only&#39;</span><span class="p">,</span> <span class="s1">&#39;or&#39;</span><span class="p">,</span> <span class="s1">&#39;other&#39;</span><span class="p">,</span> <span class="s1">&#39;our&#39;</span><span class="p">,</span> <span class="s1">&#39;own&#39;</span><span class="p">,</span> <span class="s1">&#39;rather&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;said&#39;</span><span class="p">,</span> <span class="s1">&#39;say&#39;</span><span class="p">,</span> <span class="s1">&#39;says&#39;</span><span class="p">,</span> <span class="s1">&#39;she&#39;</span><span class="p">,</span> <span class="s1">&#39;should&#39;</span><span class="p">,</span> <span class="s1">&#39;since&#39;</span><span class="p">,</span> <span class="s1">&#39;so&#39;</span><span class="p">,</span> <span class="s1">&#39;some&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;than&#39;</span><span class="p">,</span> <span class="s1">&#39;that&#39;</span><span class="p">,</span> <span class="s1">&#39;the&#39;</span><span class="p">,</span> <span class="s1">&#39;their&#39;</span><span class="p">,</span> <span class="s1">&#39;them&#39;</span><span class="p">,</span> <span class="s1">&#39;then&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;there&#39;</span><span class="p">,</span> <span class="s1">&#39;these&#39;</span><span class="p">,</span> <span class="s1">&#39;they&#39;</span><span class="p">,</span> <span class="s1">&#39;this&#39;</span><span class="p">,</span> <span class="s1">&#39;tis&#39;</span><span class="p">,</span> <span class="s1">&#39;to&#39;</span><span class="p">,</span> <span class="s1">&#39;too&#39;</span><span class="p">,</span> <span class="s1">&#39;twas&#39;</span><span class="p">,</span> <span class="s1">&#39;us&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;wants&#39;</span><span class="p">,</span> <span class="s1">&#39;was&#39;</span><span class="p">,</span> <span class="s1">&#39;we&#39;</span><span class="p">,</span> <span class="s1">&#39;were&#39;</span><span class="p">,</span> <span class="s1">&#39;what&#39;</span><span class="p">,</span> <span class="s1">&#39;when&#39;</span><span class="p">,</span> <span class="s1">&#39;where&#39;</span><span class="p">,</span> <span class="s1">&#39;which&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;while&#39;</span><span class="p">,</span> <span class="s1">&#39;who&#39;</span><span class="p">,</span> <span class="s1">&#39;whom&#39;</span><span class="p">,</span> <span class="s1">&#39;why&#39;</span><span class="p">,</span> <span class="s1">&#39;will&#39;</span><span class="p">,</span> <span class="s1">&#39;with&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;would&#39;</span><span class="p">,</span> <span class="s1">&#39;yet&#39;</span><span class="p">,</span> <span class="s1">&#39;you&#39;</span><span class="p">,</span> <span class="s1">&#39;your&#39;</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-60'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-60'>#</a>
+      </div>
+      <p>Portuguese Stop Words</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">ptClean</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-61'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-61'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">preps</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;ante&#39;</span><span class="p">,</span> <span class="s1">&#39;após&#39;</span><span class="p">,</span> <span class="s1">&#39;até&#39;</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">,</span> <span class="s1">&#39;contra&#39;</span><span class="p">,</span> <span class="s1">&#39;de&#39;</span><span class="p">,</span> <span class="s1">&#39;desde&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;é&#39;</span><span class="p">,</span> <span class="s1">&#39;em&#39;</span><span class="p">,</span> <span class="s1">&#39;entre&#39;</span><span class="p">,</span> <span class="s1">&#39;para&#39;</span><span class="p">,</span> <span class="s1">&#39;per&#39;</span><span class="p">,</span> <span class="s1">&#39;perante&#39;</span><span class="p">,</span> <span class="s1">&#39;por&#39;</span><span class="p">,</span> <span class="s1">&#39;sem&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;sob&#39;</span><span class="p">,</span> <span class="s1">&#39;sobre&#39;</span><span class="p">,</span> <span class="s1">&#39;trás&#39;</span><span class="p">,</span> <span class="s1">&#39;segundo&#39;</span><span class="p">]</span>
+    <span class="n">pronomes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;eu&#39;</span><span class="p">,</span> <span class="s1">&#39;tu&#39;</span><span class="p">,</span> <span class="s1">&#39;ele&#39;</span><span class="p">,</span> <span class="s1">&#39;ela&#39;</span><span class="p">,</span> <span class="s1">&#39;nós&#39;</span><span class="p">,</span> <span class="s1">&#39;vós&#39;</span><span class="p">,</span> <span class="s1">&#39;eles&#39;</span><span class="p">,</span> <span class="s1">&#39;elas&#39;</span><span class="p">]</span>
+    <span class="n">artigos</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="s1">&#39;as&#39;</span><span class="p">,</span> <span class="s1">&#39;os&#39;</span><span class="p">,</span> <span class="s1">&#39;aos&#39;</span><span class="p">,</span> <span class="s1">&#39;às&#39;</span><span class="p">,</span> <span class="s1">&#39;de&#39;</span><span class="p">,</span> <span class="s1">&#39;do&#39;</span><span class="p">,</span> <span class="s1">&#39;dos&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;da&#39;</span><span class="p">,</span> <span class="s1">&#39;das&#39;</span><span class="p">]</span>
+    <span class="n">outros</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;é&#39;</span><span class="p">,</span> <span class="s1">&#39;que&#39;</span><span class="p">,</span> <span class="s1">&#39;quem&#39;</span><span class="p">,</span> <span class="s1">&#39;como&#39;</span><span class="p">,</span> <span class="s1">&#39;uma&#39;</span><span class="p">,</span> <span class="s1">&#39;um&#39;</span><span class="p">]</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;na&#39;</span><span class="p">,</span> <span class="s1">&#39;nos&#39;</span><span class="p">,</span> <span class="s1">&#39;nas&#39;</span><span class="p">]</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">preps</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">pronomes</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">artigos</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">outros</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-62'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-62'>#</a>
+      </div>
+      <p>Spanish Stop Words</p>
+<p>obtained from http://www.ranks.nl/stopwords/spanish.html</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">esClean</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-63'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-63'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;un&#39;</span><span class="p">,</span> <span class="s1">&#39;una&#39;</span><span class="p">,</span> <span class="s1">&#39;unas&#39;</span><span class="p">,</span> <span class="s1">&#39;unos&#39;</span><span class="p">,</span> <span class="s1">&#39;uno&#39;</span><span class="p">,</span> <span class="s1">&#39;sobre&#39;</span><span class="p">,</span> <span class="s1">&#39;todo&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;también&#39;</span><span class="p">,</span> <span class="s1">&#39;tras&#39;</span><span class="p">,</span> <span class="s1">&#39;otro&#39;</span><span class="p">,</span> <span class="s1">&#39;algún&#39;</span><span class="p">,</span> <span class="s1">&#39;alguno&#39;</span><span class="p">,</span> <span class="s1">&#39;alguna&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;algunos&#39;</span><span class="p">,</span> <span class="s1">&#39;algunas&#39;</span><span class="p">,</span> <span class="s1">&#39;ser&#39;</span><span class="p">,</span> <span class="s1">&#39;es&#39;</span><span class="p">,</span> <span class="s1">&#39;soy&#39;</span><span class="p">,</span> <span class="s1">&#39;eres&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;somos&#39;</span><span class="p">,</span> <span class="s1">&#39;sois&#39;</span><span class="p">,</span> <span class="s1">&#39;estoy&#39;</span><span class="p">,</span> <span class="s1">&#39;esta&#39;</span><span class="p">,</span> <span class="s1">&#39;estamos&#39;</span><span class="p">,</span> <span class="s1">&#39;estais&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;estan&#39;</span><span class="p">,</span> <span class="s1">&#39;como&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">,</span> <span class="s1">&#39;para&#39;</span><span class="p">,</span> <span class="s1">&#39;atras&#39;</span><span class="p">,</span> <span class="s1">&#39;porque&#39;</span><span class="p">,</span> <span class="s1">&#39;por qué&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;estado&#39;</span><span class="p">,</span> <span class="s1">&#39;estaba&#39;</span><span class="p">,</span> <span class="s1">&#39;ante&#39;</span><span class="p">,</span> <span class="s1">&#39;antes&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;siendo&#39;</span><span class="p">,</span> <span class="s1">&#39;ambos&#39;</span><span class="p">,</span> <span class="s1">&#39;pero&#39;</span><span class="p">,</span> <span class="s1">&#39;por&#39;</span><span class="p">,</span> <span class="s1">&#39;poder&#39;</span><span class="p">,</span> <span class="s1">&#39;puede&#39;</span><span class="p">,</span> <span class="s1">&#39;puedo&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;podemos&#39;</span><span class="p">,</span> <span class="s1">&#39;podeis&#39;</span><span class="p">,</span> <span class="s1">&#39;pueden&#39;</span><span class="p">,</span> <span class="s1">&#39;fui&#39;</span><span class="p">,</span> <span class="s1">&#39;fue&#39;</span><span class="p">,</span> <span class="s1">&#39;fuimos&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;fueron&#39;</span><span class="p">,</span> <span class="s1">&#39;hacer&#39;</span><span class="p">,</span> <span class="s1">&#39;hago&#39;</span><span class="p">,</span> <span class="s1">&#39;hace&#39;</span><span class="p">,</span> <span class="s1">&#39;hacemos&#39;</span>
+        <span class="p">,</span> <span class="s1">&#39;haceis&#39;</span><span class="p">,</span> <span class="s1">&#39;hacen&#39;</span><span class="p">,</span> <span class="s1">&#39;cada&#39;</span><span class="p">,</span> <span class="s1">&#39;fin&#39;</span><span class="p">,</span> <span class="s1">&#39;incluso&#39;</span><span class="p">,</span> <span class="s1">&#39;primero 	desde&#39;</span>
+        <span class="p">,</span> <span class="s1">&#39;conseguir&#39;</span><span class="p">,</span> <span class="s1">&#39;consigo&#39;</span><span class="p">,</span> <span class="s1">&#39;consigue&#39;</span><span class="p">,</span> <span class="s1">&#39;consigues&#39;</span><span class="p">,</span> <span class="s1">&#39;conseguimos&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;consiguen&#39;</span><span class="p">,</span> <span class="s1">&#39;ir&#39;</span><span class="p">,</span> <span class="s1">&#39;voy&#39;</span><span class="p">,</span> <span class="s1">&#39;va&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;vamos&#39;</span><span class="p">,</span> <span class="s1">&#39;vais&#39;</span><span class="p">,</span> <span class="s1">&#39;van&#39;</span><span class="p">,</span> <span class="s1">&#39;vaya&#39;</span><span class="p">,</span> <span class="s1">&#39;gueno&#39;</span><span class="p">,</span> <span class="s1">&#39;ha&#39;</span><span class="p">,</span> <span class="s1">&#39;tener&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tengo&#39;</span><span class="p">,</span> <span class="s1">&#39;tiene&#39;</span><span class="p">,</span> <span class="s1">&#39;tenemos&#39;</span><span class="p">,</span> <span class="s1">&#39;teneis&#39;</span><span class="p">,</span> <span class="s1">&#39;tienen&#39;</span><span class="p">,</span> <span class="s1">&#39;el&#39;</span><span class="p">,</span> <span class="s1">&#39;la&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;lo&#39;</span><span class="p">,</span> <span class="s1">&#39;las&#39;</span><span class="p">,</span> <span class="s1">&#39;los&#39;</span><span class="p">,</span> <span class="s1">&#39;su&#39;</span><span class="p">,</span> <span class="s1">&#39;aqui&#39;</span><span class="p">,</span> <span class="s1">&#39;mio&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tuyo&#39;</span><span class="p">,</span> <span class="s1">&#39;ellos&#39;</span><span class="p">,</span> <span class="s1">&#39;ellas&#39;</span><span class="p">,</span> <span class="s1">&#39;nos&#39;</span><span class="p">,</span> <span class="s1">&#39;nosotros&#39;</span><span class="p">,</span> <span class="s1">&#39;vosotros&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;vosotras&#39;</span><span class="p">,</span> <span class="s1">&#39;si&#39;</span><span class="p">,</span> <span class="s1">&#39;dentro&#39;</span><span class="p">,</span> <span class="s1">&#39;solo&#39;</span><span class="p">,</span> <span class="s1">&#39;solamente&#39;</span><span class="p">,</span> <span class="s1">&#39;saber&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;sabes&#39;</span><span class="p">,</span> <span class="s1">&#39;sabe&#39;</span><span class="p">,</span> <span class="s1">&#39;sabemos&#39;</span><span class="p">,</span> <span class="s1">&#39;sabeis&#39;</span><span class="p">,</span> <span class="s1">&#39;saben&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ultimo&#39;</span><span class="p">,</span> <span class="s1">&#39;largo&#39;</span><span class="p">,</span> <span class="s1">&#39;bastante&#39;</span><span class="p">,</span> <span class="s1">&#39;haces&#39;</span><span class="p">,</span> <span class="s1">&#39;muchos&#39;</span><span class="p">,</span> <span class="s1">&#39;aquellos&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;aquellas&#39;</span><span class="p">,</span> <span class="s1">&#39;sus&#39;</span><span class="p">,</span> <span class="s1">&#39;entonces&#39;</span><span class="p">,</span> <span class="s1">&#39;tiempo&#39;</span><span class="p">,</span> <span class="s1">&#39;verdad&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;verdadero&#39;</span><span class="p">,</span> <span class="s1">&#39;verdadera 	cierto&#39;</span><span class="p">,</span> <span class="s1">&#39;ciertos&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;cierta&#39;</span><span class="p">,</span> <span class="s1">&#39;ciertas&#39;</span><span class="p">,</span> <span class="s1">&#39;intentar&#39;</span><span class="p">,</span> <span class="s1">&#39;intento&#39;</span><span class="p">,</span> <span class="s1">&#39;intenta&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;intentas&#39;</span><span class="p">,</span> <span class="s1">&#39;intentamos&#39;</span><span class="p">,</span> <span class="s1">&#39;intentais&#39;</span><span class="p">,</span> <span class="s1">&#39;intentan&#39;</span><span class="p">,</span> <span class="s1">&#39;dos&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;bajo&#39;</span><span class="p">,</span> <span class="s1">&#39;arriba&#39;</span><span class="p">,</span> <span class="s1">&#39;encima&#39;</span><span class="p">,</span> <span class="s1">&#39;usar&#39;</span><span class="p">,</span> <span class="s1">&#39;uso&#39;</span><span class="p">,</span> <span class="s1">&#39;usas&#39;</span>
+        <span class="p">,</span> <span class="s1">&#39;usa&#39;</span><span class="p">,</span> <span class="s1">&#39;usamos&#39;</span><span class="p">,</span> <span class="s1">&#39;usais&#39;</span><span class="p">,</span> <span class="s1">&#39;usan&#39;</span><span class="p">,</span> <span class="s1">&#39;emplear&#39;</span><span class="p">,</span> <span class="s1">&#39;empleo&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;empleas&#39;</span><span class="p">,</span> <span class="s1">&#39;emplean&#39;</span><span class="p">,</span> <span class="s1">&#39;ampleamos&#39;</span><span class="p">,</span> <span class="s1">&#39;empleais&#39;</span><span class="p">,</span> <span class="s1">&#39;valor&#39;</span><span class="p">,</span> <span class="s1">&#39;muy&#39;</span>
+        <span class="p">,</span> <span class="s1">&#39;era&#39;</span><span class="p">,</span> <span class="s1">&#39;eras&#39;</span><span class="p">,</span> <span class="s1">&#39;eramos&#39;</span><span class="p">,</span> <span class="s1">&#39;eran&#39;</span><span class="p">,</span> <span class="s1">&#39;modo&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;bien&#39;</span><span class="p">,</span> <span class="s1">&#39;cual&#39;</span><span class="p">,</span> <span class="s1">&#39;cuando&#39;</span><span class="p">,</span> <span class="s1">&#39;donde&#39;</span><span class="p">,</span> <span class="s1">&#39;mientras&#39;</span><span class="p">,</span> <span class="s1">&#39;quien&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;con&#39;</span><span class="p">,</span> <span class="s1">&#39;entre&#39;</span><span class="p">,</span> <span class="s1">&#39;sin&#39;</span><span class="p">,</span> <span class="s1">&#39;trabajo&#39;</span><span class="p">,</span> <span class="s1">&#39;trabajar&#39;</span><span class="p">,</span> <span class="s1">&#39;trabajas&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;trabaja&#39;</span><span class="p">,</span> <span class="s1">&#39;trabajamos&#39;</span><span class="p">,</span> <span class="s1">&#39;trabajais&#39;</span><span class="p">,</span> <span class="s1">&#39;trabajan&#39;</span>
+        <span class="p">,</span> <span class="s1">&#39;podria&#39;</span><span class="p">,</span> <span class="s1">&#39;podrias&#39;</span><span class="p">,</span> <span class="s1">&#39;podriamos&#39;</span><span class="p">,</span> <span class="s1">&#39;podrian&#39;</span><span class="p">,</span> <span class="s1">&#39;podriais&#39;</span><span class="p">,</span> <span class="s1">&#39;yo&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;aquel&#39;</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-64'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-64'>#</a>
+      </div>
+      <p>Frenc Stop Words</p>
+<p>obtained from http://www.ranks.nl/stopwords/french.html</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">frClean</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-65'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-65'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;alors&#39;</span><span class="p">,</span> <span class="s1">&#39;au&#39;</span><span class="p">,</span> <span class="s1">&#39;aucuns&#39;</span><span class="p">,</span> <span class="s1">&#39;aussi&#39;</span><span class="p">,</span> <span class="s1">&#39;autre&#39;</span><span class="p">,</span> <span class="s1">&#39;avant&#39;</span><span class="p">,</span> <span class="s1">&#39;avec&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;avoir&#39;</span><span class="p">,</span> <span class="s1">&#39;bon&#39;</span><span class="p">,</span> <span class="s1">&#39;car&#39;</span><span class="p">,</span> <span class="s1">&#39;ce&#39;</span><span class="p">,</span> <span class="s1">&#39;cela&#39;</span><span class="p">,</span> <span class="s1">&#39;ces&#39;</span><span class="p">,</span> <span class="s1">&#39;ceux&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;chaque&#39;</span><span class="p">,</span> <span class="s1">&#39;ci&#39;</span><span class="p">,</span> <span class="s1">&#39;comme&#39;</span><span class="p">,</span> <span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="s1">&#39;dans&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;des&#39;</span><span class="p">,</span> <span class="s1">&#39;du&#39;</span><span class="p">,</span> <span class="s1">&#39;dedans&#39;</span><span class="p">,</span> <span class="s1">&#39;dehors&#39;</span><span class="p">,</span> <span class="s1">&#39;depuis&#39;</span><span class="p">,</span> <span class="s1">&#39;deux&#39;</span><span class="p">,</span> <span class="s1">&#39;devrait&#39;</span>
+        <span class="p">,</span> <span class="s1">&#39;doit&#39;</span><span class="p">,</span> <span class="s1">&#39;donc&#39;</span><span class="p">,</span> <span class="s1">&#39;dos&#39;</span><span class="p">,</span> <span class="s1">&#39;droite&#39;</span><span class="p">,</span> <span class="s1">&#39;début&#39;</span><span class="p">,</span> <span class="s1">&#39;elle&#39;</span><span class="p">,</span> <span class="s1">&#39;elles&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;en&#39;</span><span class="p">,</span> <span class="s1">&#39;encore&#39;</span><span class="p">,</span> <span class="s1">&#39;essai&#39;</span><span class="p">,</span> <span class="s1">&#39;est&#39;</span><span class="p">,</span> <span class="s1">&#39;et&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;eu&#39;</span><span class="p">,</span> <span class="s1">&#39;fait&#39;</span><span class="p">,</span> <span class="s1">&#39;faites&#39;</span><span class="p">,</span> <span class="s1">&#39;fois&#39;</span><span class="p">,</span> <span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="s1">&#39;haut&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;hors&#39;</span><span class="p">,</span> <span class="s1">&#39;ici&#39;</span><span class="p">,</span> <span class="s1">&#39;il&#39;</span><span class="p">,</span> <span class="s1">&#39;ils&#39;</span><span class="p">,</span> <span class="s1">&#39;je 	juste&#39;</span><span class="p">,</span> <span class="s1">&#39;la&#39;</span><span class="p">,</span> <span class="s1">&#39;le&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;les&#39;</span><span class="p">,</span> <span class="s1">&#39;leur&#39;</span><span class="p">,</span> <span class="s1">&#39;là&#39;</span><span class="p">,</span> <span class="s1">&#39;ma&#39;</span><span class="p">,</span> <span class="s1">&#39;maintenant&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;mais&#39;</span><span class="p">,</span> <span class="s1">&#39;mes&#39;</span><span class="p">,</span> <span class="s1">&#39;mine&#39;</span><span class="p">,</span> <span class="s1">&#39;moins&#39;</span><span class="p">,</span> <span class="s1">&#39;mon&#39;</span><span class="p">,</span> <span class="s1">&#39;mot&#39;</span><span class="p">,</span> <span class="s1">&#39;même&#39;</span><span class="p">,</span> <span class="s1">&#39;ni&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;nommés&#39;</span><span class="p">,</span> <span class="s1">&#39;notre&#39;</span><span class="p">,</span> <span class="s1">&#39;nous&#39;</span><span class="p">,</span> <span class="s1">&#39;nouveaux&#39;</span><span class="p">,</span> <span class="s1">&#39;ou&#39;</span><span class="p">,</span> <span class="s1">&#39;où&#39;</span><span class="p">,</span> <span class="s1">&#39;par&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;parce&#39;</span><span class="p">,</span> <span class="s1">&#39;parole&#39;</span><span class="p">,</span> <span class="s1">&#39;pas&#39;</span><span class="p">,</span> <span class="s1">&#39;personnes&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;peut&#39;</span><span class="p">,</span> <span class="s1">&#39;peu&#39;</span><span class="p">,</span> <span class="s1">&#39;pièce&#39;</span><span class="p">,</span> <span class="s1">&#39;plupart&#39;</span><span class="p">,</span> <span class="s1">&#39;pour&#39;</span><span class="p">,</span> <span class="s1">&#39;pourquoi&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;quand&#39;</span><span class="p">,</span> <span class="s1">&#39;que&#39;</span><span class="p">,</span> <span class="s1">&#39;quel&#39;</span><span class="p">,</span> <span class="s1">&#39;quelle&#39;</span><span class="p">,</span> <span class="s1">&#39;quelles&#39;</span><span class="p">,</span> <span class="s1">&#39;quels&#39;</span><span class="p">,</span> <span class="s1">&#39;qui&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;sa&#39;</span><span class="p">,</span> <span class="s1">&#39;sans&#39;</span><span class="p">,</span> <span class="s1">&#39;ses&#39;</span><span class="p">,</span> <span class="s1">&#39;seulement&#39;</span><span class="p">,</span> <span class="s1">&#39;si&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;sien&#39;</span><span class="p">,</span> <span class="s1">&#39;son&#39;</span><span class="p">,</span> <span class="s1">&#39;sont&#39;</span><span class="p">,</span> <span class="s1">&#39;sous&#39;</span><span class="p">,</span> <span class="s1">&#39;soyez 	sujet&#39;</span><span class="p">,</span> <span class="s1">&#39;sur&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ta&#39;</span><span class="p">,</span> <span class="s1">&#39;tandis&#39;</span><span class="p">,</span> <span class="s1">&#39;tellement&#39;</span><span class="p">,</span> <span class="s1">&#39;tels&#39;</span><span class="p">,</span> <span class="s1">&#39;tes&#39;</span><span class="p">,</span> <span class="s1">&#39;ton&#39;</span><span class="p">,</span> <span class="s1">&#39;tous&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;tout&#39;</span><span class="p">,</span> <span class="s1">&#39;trop&#39;</span><span class="p">,</span> <span class="s1">&#39;très&#39;</span><span class="p">,</span> <span class="s1">&#39;tu&#39;</span><span class="p">,</span> <span class="s1">&#39;valeur&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;voie&#39;</span><span class="p">,</span> <span class="s1">&#39;voient&#39;</span><span class="p">,</span> <span class="s1">&#39;vont&#39;</span><span class="p">,</span> <span class="s1">&#39;votre&#39;</span><span class="p">,</span> <span class="s1">&#39;vous&#39;</span><span class="p">,</span> <span class="s1">&#39;vu&#39;</span><span class="p">,</span> <span class="s1">&#39;ça&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;étaient&#39;</span><span class="p">,</span> <span class="s1">&#39;état&#39;</span><span class="p">,</span> <span class="s1">&#39;étions&#39;</span><span class="p">,</span> <span class="s1">&#39;été&#39;</span><span class="p">,</span> <span class="s1">&#39;être&#39;</span><span class="p">]</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -20,13 +20,13 @@ import codecs
 
 
 def usage():
-    print """
+    print("""
     USAGE:
         python qanalysis.py <file.tags> <separator>
 
     Example:
         python qanalysis guardian.tags :
-    """
+    """)
 
 
 def json_graph(graph, file='graph.json'):
@@ -63,8 +63,8 @@ def load_edge_file(file, sep=':'):
         ot = st[1].strip()
 
         if el == "ACEP":
-            print st
-            print ot
+            print(st)
+            print(ot)
             # direct graph
         if el not in graph:
             A.append(el)
@@ -92,8 +92,8 @@ def calc_incidence_matrix(graph):
     """ Computes the incidence matrix from a graph object
     """
     I = numpy.zeros((len(graph['A']), len(graph['B'])), dtype=int)
-    print "-- computing Incidence Matrix - shape", I.shape
-    for s in graph['graph'].items():
+    print("-- computing Incidence Matrix - shape", I.shape)
+    for s in list(graph['graph'].items()):
         for k in s[1]['connected_to']:
             sl = graph['A'].index(s[1]['name'])
             sc = graph['B'].index(k)
@@ -112,7 +112,7 @@ def calc_shared_vertex_matrix(graph, incidence=None):
         incidence = calc_incidence_matrix(graph)
 
     SVM = numpy.zeros((len(graph['A']), len(graph['A'])), dtype=int)
-    print "-- computing Shared Face Matrix - shape ", SVM.shape
+    print("-- computing Shared Face Matrix - shape ", SVM.shape)
     for line in range(len(incidence)):
         #print "-- processing line nr. ", line
         for col in range(line, len(incidence)):
@@ -169,10 +169,10 @@ SVM = calc_shared_vertex_matrix(g, I)
 
 
 
-print "-- Incidence Matrix"
-print I
-print "-- Shared Vertex Matrix"
-print SVM
+print("-- Incidence Matrix")
+print(I)
+print("-- Shared Vertex Matrix")
+print(SVM)
 
 
 #print "Maximum value of SVM ", SVM.max()
@@ -223,8 +223,8 @@ def areConnected(a1, b1, q=1):
 
 for q in range(SVM.max()):
     sets = []
-    print ""
-    print "-- %d-connected Matrix" % q
+    print("")
+    print("-- %d-connected Matrix" % q)
     #print SVM*(SVM>=(q+1))
     for l in SVM:
         a = numpy.where(l >= (q + 1))
@@ -232,13 +232,13 @@ for q in range(SVM.max()):
         #print sets
     #print set(SVM)
 
-    print "-- q=", q
+    print("-- q=", q)
     res = calculate_sets_q(sets, g['A'])
-    print res, "n.components:", len(res)
+    print(res, "n.components:", len(res))
 
     for el in res:
         out = [g['A'][x] for x in list(el)]
-        print "-- " + " ::: ".join(out)
+        print("-- " + " ::: ".join(out))
 
     # Export network in a readable format
     outf = str(q) + ('-%d' % os.getppid())

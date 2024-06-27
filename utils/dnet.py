@@ -6,14 +6,11 @@ dnet.py
 
 a Telnet Library to Connect to Guess
 
-Guess is a graph exploration tool that can be found at: http://guess.wikispot.org/Front_Page
+Guess is a graph exploration tool that can be found at: http://graphexploration.cond.org/
 
 """
 
-import sys
-import os
 import telnetlib
-import time
 
 class Dnet():
     """

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>generateFeatures.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>generateFeatures.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">theseus</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">from</span> <span class="nn">stemming.porter2</span> <span class="kn">import</span> <span class="n">stem</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;david&#39;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Generate The Examples Matrix of Features</span>
+
+<span class="s2">Input:</span>
+<span class="s2">                A Folder with TXT files to generate the Matrix of Features X</span>
+<span class="s2">                A bagOfWords file</span>
+
+<span class="s2">Output:</span>
+<span class="s2">                A features.txt matrix with the features of X</span>
+
+<span class="s2">Usage:</span>
+<span class="s2">                python generateFeatures.py &lt;DIR&gt; &lt;BagOfWords&gt;</span>
+
+<span class="s2">Notes:</span>
+<span class="s2">                This script requires the multiprocessing package to take advantage</span>
+<span class="s2">                of all the cores existing in the computer. Therefore is advisable</span>
+<span class="s2">                to have free memory on the machine and at least python 2.6.</span>
+
+<span class="s2">  &quot;&quot;&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Some Classes</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">ReturnValue</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">words</span><span class="p">,</span> <span class="n">docu</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">words</span> <span class="o">=</span> <span class="n">words</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">docu</span> <span class="o">=</span> <span class="n">docu</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Some Functions --------------------------------------------------------------</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;-index.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">st</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">st</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()),</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">st</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;-generateFeatures.log&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">outputFeatures</span><span class="p">(</span><span class="n">wds</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;-features.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>f=open(&lsquo;features.txt&rsquo;,&rsquo;a&rsquo;)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">feature</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">b</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">wds</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
+            <span class="n">feature</span><span class="p">[</span><span class="n">b</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">feature</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;Feature Not Writen&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">outputTFIDF</span><span class="p">(</span><span class="n">feat</span><span class="p">,</span> <span class="n">bag</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;-features-tfidf.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span>
+                    <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">feat</span><span class="p">:</span>
+        <span class="n">feature</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">bag</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">bag</span><span class="p">:</span>
+                <span class="n">feature</span><span class="p">[</span><span class="n">bag</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">weight</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">feature</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">compareFiles</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">)</span>
+    <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">_%Hh%Mm%Ss&#39;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fmt</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fmt</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">extractWords</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">docu</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">extractSentences</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">stc</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">sentences</span><span class="p">:</span>
+        <span class="n">stc</span><span class="o">.</span><span class="n">cleanText</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">stc</span><span class="o">.</span><span class="n">cleanedWords</span><span class="p">:</span>
+            <span class="n">stemed</span> <span class="o">=</span> <span class="n">stem</span><span class="p">(</span><span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+            <span class="n">docu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stemed</span><span class="p">)</span>
+            <span class="n">words</span><span class="p">[</span><span class="n">stemed</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">ReturnValue</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">docu</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">calcTFIDF</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+            <span class="n">words</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="n">theseus</span><span class="o">.</span><span class="n">tfidf</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">corpus</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">words</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <hr />
+<p>TODO Validate ARGUMENTS HERE</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="vm">__doc__</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">bagf</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Start Processing&quot;</span><span class="p">)</span>
+
+<span class="n">dirList</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;*.txt&#39;</span><span class="p">]))</span>
+<span class="n">dirList</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">cmp</span><span class="o">=</span><span class="n">compareFiles</span><span class="p">)</span>
+
+<span class="n">docs</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Load bag of words</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">b</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">bagf</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+<span class="n">b</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">bag</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">bag</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Using Features Dimension: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bag</span><span class="p">)))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>READ FILES INTO DocNode Objects</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">dirList</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">theseus</span><span class="o">.</span><span class="n">DocNode</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">),</span> <span class="n">file</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">ttl</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;Problem reading file: &quot;</span> <span class="o">+</span> <span class="n">file</span> <span class="o">+</span> <span class="s2">&quot; -- &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">]))</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Total Files Read : &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Extract All Sentences from the Documents and from all Words stem them and add them to the words dictionary.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">corpus</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+    <span class="n">index</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">fnm</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Define a Pool of worker processes equal to the number of Cores we have.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Starting a Pool of &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot; Workers&quot;</span><span class="p">)</span>
+<span class="n">pool</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Applying the extractWords via pool.map&quot;</span><span class="p">)</span>
+<span class="n">allWords</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">extractWords</span><span class="p">,</span> <span class="n">docs</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">allWords</span><span class="p">:</span>
+    <span class="n">outputFeatures</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">words</span><span class="p">,</span> <span class="n">bag</span><span class="p">)</span>
+    <span class="n">corpus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">docu</span><span class="p">)</span>
+
+<span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Corpus Created! Calculating TF.IDF Features Vector&quot;</span><span class="p">)</span>
+
+<span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Starting a Pool of &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot; Workers&quot;</span><span class="p">)</span>
+<span class="n">pool</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Applying the calcTFIDF via pool.map&quot;</span><span class="p">)</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">calcTFIDF</span><span class="p">,</span> <span class="n">corpus</span><span class="p">)</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Features Generation Completed! Exporting Features to File&quot;</span><span class="p">)</span>
+<span class="n">outputTFIDF</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">bag</span><span class="p">)</span>
+
+<span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Construction of the Features Matrix Concluded&quot;</span><span class="p">)</span>
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Features Matrix is a &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;x&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bag</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; matrix&quot;</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

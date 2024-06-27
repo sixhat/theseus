@@ -17,7 +17,7 @@ Usage:
 
 import sys
 import re
-import HTMLParser
+import html.parser
 import numpy
 #from scipy import stats
 
@@ -25,7 +25,7 @@ import numpy
 infile = ''
 sradius = 1
 
-class MyStripper(HTMLParser.HTMLParser):
+class MyStripper(html.parser.HTMLParser):
     """docstring for MyStripper"""
 
     def __init__(self):
@@ -124,7 +124,7 @@ def process(infile):
     for it in range(len(lines)):
     #        if smooth[it]>(mscore+sscore):
         if smooth[it] > (msmooth + ssmooth):
-            print rm_tags(lines[it]).encode("utf-8")
+            print(rm_tags(lines[it]).encode("utf-8"))
             #print score[it],smooth[it], rm_tags(lines[it]).encode("utf-8")
 
             #print fil
@@ -144,4 +144,4 @@ if __name__ == '__main__':
     if len(sys.argv) == 3:
         main()
     else:
-        print __doc__
+        print(__doc__)

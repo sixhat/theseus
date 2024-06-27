@@ -13,15 +13,15 @@ function help {
         exit
 }
 
-if [ -z $jornal ] 
+if [ -z "$jornal" ]
     then 
         help 
 fi
 
-if [ -d "$jornal" ] 
+if [ -d "$jornal" ]
     then
         echo All Good
-    else 
+    else
         help
 fi
 
@@ -31,10 +31,9 @@ cd $jornal
 for dd in 20*
 do
 # We don't process todays directory
-	if [ $dd != $hoje ]
-		then 
+    if [ $dd != $hoje ]
+        then
             zip -m -r -9 $jornal-$hoje.zip $dd
-	fi
+    fi
 done
-
 

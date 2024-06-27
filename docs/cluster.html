@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>cluster.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>cluster.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span>   <span class="n">loadtxt</span><span class="p">,</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">savetxt</span>
+<span class="kn">from</span> <span class="nn">scipy.cluster.vq</span> <span class="kn">import</span>   <span class="n">vq</span><span class="p">,</span> <span class="n">kmeans</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">dot</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;david&#39;</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Performs k-means clustering on a matrix of features</span>
+
+<span class="s2">Input:</span>
+<span class="s2">        * A file with the features matrix MxN where M is the number of</span>
+<span class="s2">            observations and N is the number of features</span>
+<span class="s2">        * The desired number of clusters K</span>
+<span class="s2">        * The range of features to work with</span>
+<span class="s2">            ex:</span>
+<span class="s2">                4 # means 0...3</span>
+<span class="s2">                4:10 # means elements 4...9</span>
+<span class="s2">                4: # means 4...</span>
+<span class="s2">                :7 # means 0....6</span>
+
+<span class="s2">                Attention that this range starts index at 0 while the</span>
+<span class="s2">                documents index start at 1 so 0 corresponds to 1</span>
+
+<span class="s2">Output:</span>
+<span class="s2">        A file with the indexes of the clusters</span>
+
+<span class="s2">Usage:</span>
+<span class="s2">        python cluster.py &lt;features.txt&gt; &lt;K&gt; &lt;range&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">st</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()),</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">st</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;-cluster.log&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>TODO Validate ARGUMENTS HERE</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="vm">__doc__</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">Xfile</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">K</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Loading features&quot;</span><span class="p">)</span>
+
+<span class="n">sK</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">eK</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+    <span class="n">rK</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rK</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">eK</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rK</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rK</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sK</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rK</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">eK</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rK</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+<span class="n">ft</span> <span class="o">=</span> <span class="n">loadtxt</span><span class="p">(</span><span class="n">Xfile</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="n">sK</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">eK</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="n">eK</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ft</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">eK</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">ft</span><span class="p">):</span>
+    <span class="n">eK</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ft</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">sK</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">sK</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">if</span> <span class="n">eK</span> <span class="o">&lt;=</span> <span class="n">sK</span><span class="p">:</span>
+    <span class="n">log</span><span class="p">(</span><span class="s2">&quot;Range is empty&quot;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">feat</span> <span class="o">=</span> <span class="n">ft</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">eK</span> <span class="o">-</span> <span class="n">sK</span><span class="p">,</span> <span class="p">:]</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Calculating Clusters for items </span><span class="si">%d</span><span class="s2"> through </span><span class="si">%d</span><span class="s2"> (inclusive)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sK</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">eK</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Normalize the features (Still have some doubts about the quality of
+results of this approach)
+feat=whiten(feat)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>The use of the Kmeans2 is giving crappy results as it is only running once.
+centroids, labels=kmeans2(feat,K, minit=&rsquo;points&rsquo;, iter=10)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>To use the Kmeans algorithm from scipy we get centroids and the variance and
+the iter parameter is not the iterations but the number of times to
+run kmeans</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">centroids</span><span class="p">,</span> <span class="n">variance</span> <span class="o">=</span> <span class="n">kmeans</span><span class="p">(</span><span class="n">feat</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="n">log</span><span class="p">(</span>
+    <span class="s2">&quot;Centroids and Variance Calculated... proceeding to calculate Labels and Distance Matrix&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>But for this is necessary to compute the labels from the centroids (distance)
+from the features and the centroids.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">labels</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="n">vq</span><span class="p">(</span><span class="n">feat</span><span class="p">,</span> <span class="n">centroids</span><span class="p">)</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Labels length: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)))</span>
+
+<span class="n">outputCluster</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;cluster-&quot;</span> <span class="o">+</span> <span class="n">Xfile</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)):</span>
+    <span class="n">outputCluster</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">outputCluster</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Clusters Exported to file clusters-...&quot;</span><span class="p">)</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Starting Display&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>A partir dos centroids pode-se calcular a distância de cada documento a cada
+um dos centroids com uma cor respectiva.
+Se desenharmos horizontalmente os pontos com X a ser a data de
+publicação e Y o cluster?
+O ideal será talvez utilizar o tkinter e o Canvas</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">Tk</span><span class="p">()</span>
+<span class="n">root</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Clustering &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; examples in &quot;</span> <span class="o">+</span>
+           <span class="nb">str</span><span class="p">(</span><span class="n">K</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; clusters&quot;</span><span class="p">)</span>
+<span class="n">largura</span> <span class="o">=</span> <span class="mi">1400</span>
+<span class="n">altura</span> <span class="o">=</span> <span class="mi">700</span>
+<span class="n">ex</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">bsize</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">wstep</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span> <span class="o">+</span> <span class="n">largura</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">hstep</span> <span class="o">=</span> <span class="n">altura</span> <span class="o">/</span> <span class="n">K</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">wstep</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hstep</span><span class="p">)</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">Canvas</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">largura</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">altura</span> <span class="o">+</span> <span class="n">hstep</span> <span class="o">/</span> <span class="n">ex</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">sim</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">dot</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Calculate Similarity matrix to improve speed</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">distm</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)):</span>
+        <span class="n">distm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">sim</span><span class="p">(</span><span class="n">feat</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">feat</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">distm</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">distm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Saving Similarity Matrix similarity-...&quot;</span><span class="p">)</span>
+<span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;similarity-&quot;</span> <span class="o">+</span> <span class="n">Xfile</span><span class="p">,</span> <span class="n">distm</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Start drawing&hellip;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">lcen</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">pcen</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">arcs</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">drawBack</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">K</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">lcen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">create_line</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">hstep</span> <span class="o">*</span> <span class="n">i</span><span class="p">,</span> <span class="n">largura</span><span class="p">,</span> <span class="n">hstep</span> <span class="o">*</span> <span class="n">i</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">drawPoints</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">wstep</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">hstep</span>
+        <span class="n">pcen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">create_rectangle</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">bsize</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">bsize</span><span class="p">,</span>
+                                       <span class="n">x</span> <span class="o">+</span> <span class="n">bsize</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">bsize</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">))</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">create_text</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">40</span> <span class="o">-</span> <span class="mi">10</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">4</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">sK</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                          <span class="n">activefill</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;arial&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">drawArcs</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">arcs</span><span class="p">:</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+    <span class="n">thresholdArcs</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">wstep</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">hstep</span>
+        <span class="k">for</span> <span class="n">old</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <pre><code>       if dist(feat[old,:] ,feat[i,:] )&lt;thresholdArcs:
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">if</span> <span class="n">distm</span><span class="p">[</span><span class="n">old</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">thresholdArcs</span><span class="p">:</span>
+                <span class="n">oldx</span> <span class="o">=</span> <span class="p">(</span><span class="n">old</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">wstep</span>
+                <span class="n">oldy</span> <span class="o">=</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">old</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">hstep</span>
+                <span class="k">if</span>  <span class="nb">abs</span><span class="p">(</span><span class="n">oldy</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">arcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">create_line</span><span class="p">(</span><span class="n">oldx</span><span class="p">,</span> <span class="n">oldy</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+                                              <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">activefill</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">arcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">create_arc</span><span class="p">(</span><span class="n">oldx</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">hstep</span> <span class="o">/</span> <span class="n">ex</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span>
+                                             <span class="n">y</span> <span class="o">+</span> <span class="n">hstep</span> <span class="o">/</span> <span class="n">ex</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                             <span class="n">extent</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">outline</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span>
+                                             <span class="n">activeoutline</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>
+                                             <span class="n">activewidth</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">arcs</span><span class="p">:</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">tag_lower</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">Scale</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="n">HORIZONTAL</span><span class="p">,</span>
+          <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Minimum Document Similarity:&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">0.6</span> <span class="o">*</span> <span class="n">largura</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">&quot;&lt;ButtonRelease-1&gt;&quot;</span><span class="p">,</span> <span class="n">drawArcs</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+<span class="n">s</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
+
+<span class="n">drawBack</span><span class="p">()</span>
+<span class="n">drawPoints</span><span class="p">()</span>
+<span class="n">drawArcs</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>import cProfile
+cProfile.run(&lsquo;drawArcs(None)&rsquo;,&rsquo;drawArcs.prof&rsquo;)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">mainloop</span><span class="p">()</span>
+
+<span class="n">log</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

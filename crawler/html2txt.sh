@@ -30,17 +30,16 @@ cd $jornal
 for dd in 20*
 do
 # We don't process todays directory
-	if [ $dd != $hoje ]
-		then 
-		echo Entering $dd
+        if [ $dd != $hoje ]
+            then
+                echo Entering $dd
         cd $dd
         mkdir -p "txt"
         for f in *.html
         do
-            lynx -dump $f > txt/$f.txt
+            lynx -dump "$f" > "txt/$f.txt"
         done
         cd ..
 	fi
 done
-
 

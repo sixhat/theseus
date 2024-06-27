@@ -1,13 +1,14 @@
 __author__ = 'david'
 
-import os, sys
+import os
 import networkx as nx
-import time, datetime
+import time
+import datetime
 
 inf = '5-guardianDoc.gml'
 data = '/Volumes/HD2/PAPER-ACS/guardian.co.uk-2011-12-01/HTML/'
 txt = '/Volumes/HD2/PAPER-ACS/guardian.co.uk-2011-12-01/TXT2/'
-members = 'members.txt'
+members_file = 'members.txt'
 
 
 def log(st):
@@ -15,12 +16,12 @@ def log(st):
     f = open(str(os.getpid()) + '-cluster.log', 'a')
     f.write(s + "\n")
     f.close()
-    print s
+    print(s)
 
 
 def compareFiles(x, y):
-    assert isinstance(x, str) or isinstance(x, unicode)
-    assert isinstance(y, str) or isinstance(x, unicode)
+    assert isinstance(x, str) or isinstance(x, str)
+    assert isinstance(y, str) or isinstance(x, str)
     x = x.split('__')
     y = y.split('__')
     fmt = '%Y-%m-%d_%Hh%Mm%Ss'
@@ -35,26 +36,25 @@ def compareFiles(x, y):
 
 g = nx.read_gml(inf, relabel=True)
 
-print nx.number_connected_components(g), "connected components"
-print g.number_of_nodes(), "nodes"
+print(nx.number_connected_components(g), "connected components")
+print(g.number_of_nodes(), "nodes")
 
 
 # Reading The Membership File
-memb = []
-mf = open(members, 'r')
-for l in mf:
-    if not l.startswith("#"):
-        memb.append(l.strip().split(' '))
+members = []
+mf = open(members_file, 'r')
+for linha in mf:
+    if not linha.startswith("#"):
+        members.append(linha.strip().split(' '))
 
-for topic in memb:
+for topic in members:
     topic.sort(cmp=compareFiles)
-    print
-    print "<h1>NEW TOPIC</h1>"
+    print()
+    print("<h1>NEW TOPIC</h1>")
+
     # Not good... need to travel the path.
-
-
     for doc in topic:
-        print '<a href="%s">%s</a> - ' % (doc, doc)
+        print('<a href="%s">%s</a> - ' % (doc, doc))
 
 
 

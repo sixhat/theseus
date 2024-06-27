@@ -1,8 +1,11 @@
 # encoding: utf-8
 import glob
 import time
-import os, sys, datetime, codecs
-import theseus
+import os
+import sys
+import datetime
+import codecs
+from . import theseus
 import multiprocessing
 from stemming.porter2 import stem
 
@@ -46,7 +49,7 @@ def log(st):
     f = open(str(os.getpid()) + '-generateFeatures.log', 'a')
     f.write(s + "\n")
     f.close()
-    print s
+    print(s)
 
 
 def outputFeatures(wds, b):
@@ -55,7 +58,7 @@ def outputFeatures(wds, b):
     n = 1
     feature = [0 for x in b]
     for w in wds:
-        if b.has_key(w):
+        if w in b:
             feature[b[w] - 1] = 1
     try:
         f.write(" ".join([str(x) for x in feature]) + "\n")
@@ -70,8 +73,8 @@ def outputTFIDF(feat, bag):
                     encoding='utf-8')
     for doc in feat:
         feature = [0.0 for x in bag]
-        for word, weight in doc.items():
-            if bag.has_key(word):
+        for word, weight in list(doc.items()):
+            if word in bag:
                 feature[bag[word] - 1] = weight
         f.write(" ".join([str(x) for x in feature]) + "\n")
         f.flush()
@@ -110,14 +113,14 @@ def extractWords(doc):
 def calcTFIDF(doc):
     words = {}
     for word in doc:
-        if not words.has_key(word):
+        if word not in words:
             words[word] = theseus.tfidf(word, doc, corpus)
     return words
 
 # -----------------------------------------------------------------------------
 # TODO Validate ARGUMENTS HERE
 if len(sys.argv) != 3:
-    print __doc__
+    print(__doc__)
     sys.exit(1)
 
 path = sys.argv[1]
