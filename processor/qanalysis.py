@@ -91,17 +91,17 @@ def load_edge_file(file, sep=':'):
 def calc_incidence_matrix(graph):
     """ Computes the incidence matrix from a graph object
     """
-    I = numpy.zeros((len(graph['A']), len(graph['B'])), dtype=int)
-    print("-- computing Incidence Matrix - shape", I.shape)
+    incidence_matrix = numpy.zeros((len(graph['A']), len(graph['B'])), dtype=int)
+    print("-- computing Incidence Matrix - shape", incidence_matrix.shape)
     for s in list(graph['graph'].items()):
         for k in s[1]['connected_to']:
             sl = graph['A'].index(s[1]['name'])
             sc = graph['B'].index(k)
-            I[sl, sc] = 1
+            incidence_matrix[sl, sc] = 1
 
     #print I
-    numpy.savetxt("incidence.txt", I, fmt='%1d')
-    return I
+    numpy.savetxt("incidence.txt", incidence_matrix, fmt='%1d')
+    return incidence_matrix
 
 
 def calc_shared_vertex_matrix(graph, incidence=None):
@@ -159,10 +159,10 @@ json_graph(g)
 
 
 ## incidence matrix
-I = calc_incidence_matrix(g)
+incidence_matrix = calc_incidence_matrix(g)
 
 ## Shared Vertex Matrix
-SVM = calc_shared_vertex_matrix(g, I)
+SVM = calc_shared_vertex_matrix(g, incidence_matrix)
 
 ## Algoritmo para calcular os simlex de diferentes q-order e as q-chains
 
@@ -170,7 +170,7 @@ SVM = calc_shared_vertex_matrix(g, I)
 
 
 print("-- Incidence Matrix")
-print(I)
+print(incidence_matrix)
 print("-- Shared Vertex Matrix")
 print(SVM)
 
@@ -226,8 +226,8 @@ for q in range(SVM.max()):
     print("")
     print("-- %d-connected Matrix" % q)
     #print SVM*(SVM>=(q+1))
-    for l in SVM:
-        a = numpy.where(l >= (q + 1))
+    for row in SVM:
+        a = numpy.where(row >= (q + 1))
         sets.append(set(a[0]))
         #print sets
     #print set(SVM)
@@ -241,7 +241,7 @@ for q in range(SVM.max()):
         print("-- " + " ::: ".join(out))
 
     # Export network in a readable format
-    outf = str(q) + ('-%d' % os.getppid())
+    out_file = str(q) + ('-%d' % os.getppid())
     G = nx.Graph()
     for el in res:
         out = [g['A'][x] for x in list(el)]
@@ -259,7 +259,7 @@ for q in range(SVM.max()):
     #nx.write_weighted_edgelist(G, outf+'.edge', delimiter=',')
     #nx.write_gexf(G, outf+'.gexf')
     #nx.write_gml(G, outf+'.gml')
-    nx.write_graphml(G, outf + '.graphml', encoding='utf-8')
+    nx.write_graphml(G, out_file + '.graphml', encoding='utf-8')
 
 
 

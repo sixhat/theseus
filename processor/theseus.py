@@ -195,8 +195,8 @@ def extractPhrases(s1):
     XXX: We need to deal with numbers...
     """
     blocks = '.:;!?'
-    for l in blocks:
-        s1 = s1.replace(l, "|")
+    for letter in blocks:
+        s1 = s1.replace(letter, "|")
     s1 = s1.replace("||", "|")
     s1 = s1.replace("\r", "")
     s1 = s1.replace("\n\n", "|")
@@ -211,11 +211,11 @@ def cleanStringNoDel(s1):
     letters = 'abcdefghijklmnopqrstuvwxyz áàéèíìóòúù äëïöü ãõñç'
     s1 = s1.lower()
     ot = ''
-    for l in s1:
-        if l in signs:
+    for letter in s1:
+        if letter in signs:
             ot += " "
-        elif l in letters:
-            ot += l
+        elif letter in letters:
+            ot += letter
     ot2 = ot.split()
     ot = ''
     for w in ot2:
@@ -231,11 +231,11 @@ def cleanString(s1):
     letters = 'abcdefghijklmnopqrstuvwxyz áàéèíìóòúù äëïöü ãõñç'
     s1 = s1.lower()
     ot = ''
-    for l in s1:
-        if l in signs:
+    for letter in s1:
+        if letter in signs:
             ot += " "
-        if l in letters:
-            ot += l
+        if letter in letters:
+            ot += letter
     ot2 = ot.split()
     ot = ''
     for w in ot2:
