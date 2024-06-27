@@ -1,34 +1,39 @@
-__author__ = "david"
-__doc__ = (
-    r"Extract Titles from HTML Pages."
-    r" Requires BeatutifullSoup"
-    r"Argument is the directory where the "
-)
+'''
+Extract Titles from HTML Pages.
+
+    Usage: 
+        python extractTitles.py directory
+
+        directory must contain html files
+
+    Outputs a file title.txt with all titles separated by a tab.
+    Requires BeatutifullSoup to be installed in python environment
+'''
+__author__ = 'David Sousa-Rodrigues'
 
 import sys
+import os
 import glob
-import codecs
-from BeautifulSoup import BeautifulSoup
-
+from bs4 import BeautifulSoup
 
 def getTitle(doc):
-    # Read HTML File
-    tf = codecs.open(doc, "r", encoding="utf-8")
-    html = tf.read()
-    tf.close()
-    soup = BeautifulSoup(html)
+    '''Read HTML File and returns title'''
+    with open(doc, 'r', encoding='utf-8') as tf:
+        html = tf.read()
+    soup = BeautifulSoup(html, 'html.parser')
     return soup.html.head.title.string
 
+def main(dir):
+    '''Extract the Titles Of a HTML files in dir.'''
+    lines = [file + '\t' + getTitle(file) + '\n' for file in glob.glob(dir + '*.html')]
+    with open('title.txt', 'w') as outf:
+        outf.writelines(lines)
 
-# Need to process the Titles Of a a Folder.
-infs = glob.glob(sys.argv[1] + "*.html")
-outf = open("title.txt", "w")
-
-for file in infs:
-    try:
-        str = file[2:] + "\t" + getTitle(file) + "\n"
-    except:
-        print("Problems with file:", file)
-    print(str)
-    outf.write(str.encode("utf-8"))
-    outf.flush()
+if __name__=='__main__':
+    if len(sys.argv)==2 and os.path.isdir(sys.argv[1]):
+        dir = sys.argv[1]
+        if dir[-1]!='/':
+            dir += '/'
+        main(dir)
+    else:
+        print(__doc__)
