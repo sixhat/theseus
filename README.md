@@ -1,5 +1,10 @@
 What is Theseus?
 ================
+
+> ALERT (Jun 2024): This code is old and I'm working on a new 
+> version of it on my spare time. I've ran a simple 2to3 to convert
+> it to Python 3, but some dependencies will probably not work. 
+
 *A brief overview on what Theseus is, and is not*
 
 Theseus is a python package that includes several modules to deal with webpage retrieval and text processing.
