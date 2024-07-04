@@ -56,7 +56,3 @@ for topic in members:
     for doc in topic:
         print('<a href="%s">%s</a> - ' % (doc, doc))
 
-
-
-
-

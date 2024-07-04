@@ -352,12 +352,7 @@ Remove Blank Lines</p>
     <span class="k">if</span> <span class="n">sradius</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sradius</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">smooth</span><span class="p">)</span> <span class="o">-</span> <span class="n">sradius</span><span class="p">):</span>
             <span class="n">smooth</span><span class="p">[</span><span class="n">it</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">score</span><span class="p">[(</span><span class="n">it</span> <span class="o">-</span> <span class="n">sradius</span><span class="p">):(</span><span class="n">it</span> <span class="o">+</span> <span class="n">sradius</span><span class="p">)])</span> <span class="o">/</span> <span class="p">(</span>
-            <span class="mi">2</span> <span class="o">*</span> <span class="n">sradius</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-
-    <span class="n">mscore</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
-    <span class="n">sscore</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
-    <span class="n">msmooth</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">smooth</span><span class="p">)</span>
-    <span class="n">ssmooth</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">smooth</span><span class="p">)</span></pre></div>
+            <span class="mi">2</span> <span class="o">*</span> <span class="n">sradius</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -365,6 +360,20 @@ Remove Blank Lines</p>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>mscore = numpy.mean(score)
+   sscore = numpy.std(score)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">msmooth</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">smooth</span><span class="p">)</span>
+    <span class="n">ssmooth</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">smooth</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
       </div>
       <p>print &ldquo;smooth radius:&rdquo;, sradius
    print &ldquo;mean&rdquo;, &ldquo;std&rdquo;,&rdquo;smoothed_mean&rdquo;, &ldquo;smoothed_std&rdquo;
@@ -375,10 +384,10 @@ Remove Blank Lines</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-26'>
+  <div class='section' id='section-27'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-26'>#</a>
+        <a class='octothorpe' href='#section-27'>#</a>
       </div>
       <pre><code>   if smooth[it]&gt;(mscore+sscore):
 </code></pre>
@@ -389,24 +398,12 @@ Remove Blank Lines</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-27'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-27'>#</a>
-      </div>
-      <p>print score[it],smooth[it], rm_tags(lines[it]).encode(&ldquo;utf-8&rdquo;)</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
   <div class='section' id='section-28'>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-28'>#</a>
       </div>
-      <p>print fil</p>
+      <p>print score[it],smooth[it], rm_tags(lines[it]).encode(&ldquo;utf-8&rdquo;)</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre></pre></div>
@@ -417,6 +414,18 @@ Remove Blank Lines</p>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>print fil</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
       </div>
       
     </div>
@@ -429,10 +438,10 @@ Remove Blank Lines</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-30'>
+  <div class='section' id='section-31'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-30'>#</a>
+        <a class='octothorpe' href='#section-31'>#</a>
       </div>
       <p>print infile, sradius</p>
     </div>

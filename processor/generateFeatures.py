@@ -55,15 +55,14 @@ def log(st):
 def outputFeatures(wds, b):
     f = codecs.open(str(os.getpid()) + '-features.txt', 'a', encoding='utf-8')
     #f=open('features.txt','a')
-    n = 1
     feature = [0 for x in b]
     for w in wds:
         if w in b:
             feature[b[w] - 1] = 1
     try:
         f.write(" ".join([str(x) for x in feature]) + "\n")
-    except:
-        log("Feature Not Writen")
+    except Exception as e:
+        log(f"Feature Not Writen: {e}")
     f.flush()
     f.close()
 
@@ -134,13 +133,11 @@ dirList.sort(cmp=compareFiles)
 docs = []
 
 # Load bag of words
-b = codecs.open(bagf, 'r', encoding='utf-8')
-c = b.readlines()
-b.close()
+c = open(bagf,'r').readlines()
 
 bag = {}
-for l in c:
-    s = l.split()
+for line in c:
+    s = line.split()
     bag[s[0]] = int(s[1])
 
 log("Using Features Dimension: " + str(len(bag)))
@@ -153,8 +150,8 @@ for file in dirList:
         f.close()
         doc = theseus.DocNode(len(docs), file, txt, ttl=100)
         docs.append(doc)
-    except:
-        log("Problem reading file: " + file + " -- " + str(sys.exc_info()[0]))
+    except Exception as e:
+        log(f"{e} - Problem reading file: " + file + " -- " + str(sys.exc_info()[0]))
 
 log("Total Files Read : " + str(len(docs)))
 

@@ -299,17 +299,17 @@ with a Porter Stemming algorithm (Note: English only)</p>
       <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">cleaned</span> <span class="o">=</span> <span class="n">cleanStringNoDel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">words</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cleanedWords</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;en&quot;</span><span class="p">:</span>
-                <span class="n">stop</span> <span class="o">=</span> <span class="n">enClean</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;pt&quot;</span><span class="p">:</span>
-                <span class="n">stop</span> <span class="o">=</span> <span class="n">ptClean</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;es&quot;</span><span class="p">:</span>
-                <span class="n">stop</span> <span class="o">=</span> <span class="n">esClean</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;fr&quot;</span><span class="p">:</span>
-                <span class="n">stop</span> <span class="o">=</span> <span class="n">frClean</span><span class="p">()</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Language not set! Use another Language&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;en&quot;</span><span class="p">:</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="n">enClean</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;pt&quot;</span><span class="p">:</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="n">ptClean</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;es&quot;</span><span class="p">:</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="n">esClean</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s2">&quot;fr&quot;</span><span class="p">:</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="n">frClean</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Language not set! Use another Language&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
         <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stop</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cleanedWords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span></pre></div>
@@ -392,13 +392,9 @@ with a Porter Stemming algorithm (Note: English only)</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">exportDomain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">+</span> <span class="s2">&quot;.dom&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">:</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">w</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t export Domain &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span></pre></div>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">+</span> <span class="s2">&quot;.dom&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">:</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">word</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -504,8 +500,8 @@ with a Porter Stemming algorithm (Note: English only)</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="n">blocks</span> <span class="o">=</span> <span class="s1">&#39;.:;!?&#39;</span>
-    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
-        <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
+        <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">letter</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">)</span>
     <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;||&quot;</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">)</span>
     <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">)</span>
@@ -537,11 +533,11 @@ with a Porter Stemming algorithm (Note: English only)</p>
     <span class="n">letters</span> <span class="o">=</span> <span class="s1">&#39;abcdefghijklmnopqrstuvwxyz áàéèíìóòúù äëïöü ãõñç&#39;</span>
     <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="n">ot</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">s1</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">signs</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">s1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">signs</span><span class="p">:</span>
             <span class="n">ot</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span>
-        <span class="k">elif</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">letters</span><span class="p">:</span>
-            <span class="n">ot</span> <span class="o">+=</span> <span class="n">l</span>
+        <span class="k">elif</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">letters</span><span class="p">:</span>
+            <span class="n">ot</span> <span class="o">+=</span> <span class="n">letter</span>
     <span class="n">ot2</span> <span class="o">=</span> <span class="n">ot</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
     <span class="n">ot</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">ot2</span><span class="p">:</span>
@@ -574,11 +570,11 @@ with a Porter Stemming algorithm (Note: English only)</p>
     <span class="n">letters</span> <span class="o">=</span> <span class="s1">&#39;abcdefghijklmnopqrstuvwxyz áàéèíìóòúù äëïöü ãõñç&#39;</span>
     <span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="n">ot</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">s1</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">signs</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">s1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">signs</span><span class="p">:</span>
             <span class="n">ot</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span>
-        <span class="k">if</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">letters</span><span class="p">:</span>
-            <span class="n">ot</span> <span class="o">+=</span> <span class="n">l</span>
+        <span class="k">if</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">letters</span><span class="p">:</span>
+            <span class="n">ot</span> <span class="o">+=</span> <span class="n">letter</span>
     <span class="n">ot2</span> <span class="o">=</span> <span class="n">ot</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
     <span class="n">ot</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">ot2</span><span class="p">:</span>

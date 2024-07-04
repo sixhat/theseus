@@ -38,7 +38,8 @@ def main():
             try:
                 nome=str(item.updated_parsed[0])+"-"+str(item.updated_parsed[1])+"-"+str(item.updated_parsed[2])+"_"
                 nome=nome+str(item.updated_parsed[3])+"h"+str(item.updated_parsed[4])+"m"+str(item.updated_parsed[6])+"s_"
-            except:
+            except Exception as e:
+                print(f"Exception {e}")
                 nome=time.strftime("%Y-%j_%H-%M-%S", time.gmtime())
 
             cifra=str(zlib.adler32(str(str(item.link).encode("utf-8"))))
@@ -54,7 +55,8 @@ def main():
                     out=open(sys.argv[1]+"/"+nome,'w')
                     out.write(txt)
                     out.close()
-                except:
+                except Exception as e:
+                    print(f"Exception {e}")
                     out2=open(sys.argv[1]+"/"+"notfound.txt", 'a')
                     out2.write(str(item.link).encode("utf-8")+"\n")
                     out2.close()

@@ -1,10 +1,10 @@
-# coding=utf-8
 import os
 import sys
 import datetime
 from numpy import   loadtxt, zeros, savetxt
 from scipy.cluster.vq import   vq, kmeans
 from scipy import dot
+from tkinter import Tk, Canvas, Scale, HORIZONTAL
 import math
 
 __author__ = 'david'
@@ -121,7 +121,6 @@ log("Starting Display")
 # publicação e Y o cluster?
 # O ideal será talvez utilizar o tkinter e o Canvas
 
-from tkinter import *
 
 root = Tk()
 root.title("Clustering " + str(len(labels)) + " examples in " +
@@ -207,9 +206,7 @@ s.set(0.9)
 drawBack()
 drawPoints()
 drawArcs(None)
-#import cProfile
-#cProfile.run('drawArcs(None)','drawArcs.prof')
 
-mainloop()
+Tk.mainloop()
 
 log("Done")

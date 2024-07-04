@@ -85,8 +85,8 @@ for file in dirList:
         f.close()
         doc = theseus.DocNode(len(docs), file, txt, ttl=100)
         docs.append(doc)
-    except:
-        log("Problem reading file: " + file + " -- " + str(sys.exc_info()[0]))
+    except Exception as e:
+        log(f"{e} - Problem reading file: " + file + " -- " + str(sys.exc_info()[0]))
 
 log("Total Files Read : " + str(len(docs)))
 
