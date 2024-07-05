@@ -3,6 +3,6 @@ beautifulsoup4~=4.12.3
 numpy~=1.26.4
 scipy~=1.13.1
 zlib~=1.2.13
-chardet~=4.0.0
 future~=0.18.3
-feedparser
+feedparser~=6.0.8
+requests~=2.32.2

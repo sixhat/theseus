@@ -1,6 +1,5 @@
-# encoding: utf-8
 __author__ = 'david'
-__doc__ = """Genereates a network from the GuardinaTags """
+__doc__ = """Generates a network from the GuardinaTags """
 
 import sys
 import networkx

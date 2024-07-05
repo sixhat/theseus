@@ -1,4 +1,5 @@
 #!/bin/bash
+set -xe
 # 2010 - David Rodrigues
 # Converts a journal into a Zip File and deletes the zipped folders (carefull)
 # 
@@ -26,14 +27,14 @@ if [ -d "$jornal" ]
 fi
 
 echo Changing into $jornal Directory
-cd $jornal
+cd "$jornal"
 
 for dd in 20*
 do
-# We don't process todays directory
-    if [ $dd != $hoje ]
+# We don't process today's directory
+    if [ "$dd" != "$hoje" ]
         then
-            zip -m -r -9 $jornal-$hoje.zip $dd
+            zip -m -r -9 "$jornal-$hoje.zip" "$dd"
     fi
 done
 

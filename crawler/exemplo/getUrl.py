@@ -7,10 +7,8 @@ getUrl.py
 Parses a downloaded RSS file and downloads all items in the Feed
 
 Usage:
-    getUrl.py <folder> <timeout>
+    getUrl.py
 
-    folder is the folder where the rss.xml file was placed.
-    timeout is in seconds
 """
 
 import sys
@@ -63,7 +61,7 @@ def main():
                     out2.write(str(item.link).encode("utf-8") + "\n")
                     out2.close()
 
-                urls_file.write(item.link+ "\n")  # Add this item to the downloaded URLS file
+                urls_file.write(item.link + "\n")  # Add this item to the downloaded URLS file
                 urls_file.flush()  # Let's flush the internal buffer
                 os.fsync(urls_file.fileno())  # Let's force write of all internal buffers to disk
                 time.sleep(int(sys.argv[2]))  # Wait TIMEOUT seconds to avoid DDoS blacklistings...
