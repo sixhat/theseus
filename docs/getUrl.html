@@ -19,6 +19,11 @@
       </div>
       <h1>getUrl.py</h1>
 <p>Parses a downloaded RSS file and downloads all items in the Feed</p>
+<p>Usage:
+    getUrl.py <folder> <timeout> <rss_url></p>
+<pre><code>folder is the folder where the rss.xml file was placed.
+timeout is in seconds
+</code></pre>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
@@ -26,9 +31,8 @@
 <span class="kn">import</span> <span class="nn">feedparser</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">zlib</span>
-<span class="kn">import</span> <span class="nn">urllib.request</span>
-<span class="kn">import</span> <span class="nn">urllib.error</span>
-<span class="kn">import</span> <span class="nn">urllib.parse</span></pre></div>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -37,10 +41,15 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-1'>#</a>
       </div>
-      <p>This module receives as argument the folder where the rss.xml file is stored</p>
+      
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">main</span><span class="p">():</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">load_urls</span><span class="p">(</span><span class="n">folder_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">folder_path</span><span class="si">}</span><span class="s2">/urls.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -49,11 +58,15 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-2'>#</a>
       </div>
-      <p>Parse the downloaded rss.xml file</p>
+      
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">d</span><span class="o">=</span><span class="n">feedparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;/rss.xml&quot;</span><span class="p">)</span>
-    <span class="n">urls</span><span class="o">=</span><span class="p">[]</span> <span class="c1"># The already downloaded list of URLS</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">write_url</span><span class="p">(</span>
+    <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">folder_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">folder_path</span><span class="si">}</span><span class="s2">/urls.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -62,15 +75,19 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-3'>#</a>
       </div>
-      <p>Let&rsquo;s see if the downloaded list is present and construct the urls list</p>
+      
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">try</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/urls.txt&#39;</span><span class="p">,</span><span class="s1">&#39;r+&#39;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/urls.txt&#39;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">generate_filename</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">updated</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">updated_parsed</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">updated</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">04d</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">updated</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">updated</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">updated</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">h</span><span class="si">{</span><span class="n">updated</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">m</span><span class="si">{</span><span class="n">updated</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">s&quot;</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception when parsing timestamp: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%j_%H-%M-%S&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">())</span>
+
+    <span class="n">cifra</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">zlib</span><span class="o">.</span><span class="n">adler32</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">link</span><span class="o">.</span><span class="n">encode</span><span class="p">()))</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">cifra</span><span class="si">}</span><span class="s2">.html&quot;</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -79,44 +96,87 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-4'>#</a>
       </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">download_item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">folder_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">link</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">generate_filename</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="s2">&quot;notfound.txt&quot;</span><span class="p">),</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">link</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">download_rss</span><span class="p">(</span><span class="n">rss_url</span><span class="p">,</span> <span class="n">folder_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rss_url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="s2">&quot;rss.xml&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*** Error, no RSS to download&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>This module receives as argument the folder where the rss.xml file is stored</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">rss_url</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">download_rss</span><span class="p">(</span><span class="n">rss_url</span><span class="p">,</span> <span class="n">folder_path</span><span class="p">)</span>
+    <span class="n">rss</span> <span class="o">=</span> <span class="n">feedparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;/rss.xml&quot;</span><span class="p">)</span>
+    <span class="n">urls</span> <span class="o">=</span> <span class="n">load_urls</span><span class="p">(</span><span class="n">folder_path</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
       <p>Let&rsquo;s iterate over all entries in the parsed RSS</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">entries</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">link</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">7</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">nome</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">updated_parsed</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">updated_parsed</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">updated_parsed</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;_&quot;</span>
-                <span class="n">nome</span><span class="o">=</span><span class="n">nome</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">updated_parsed</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;h&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">updated_parsed</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;m&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">updated_parsed</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;s_&quot;</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="n">nome</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%j_%H-%M-%S&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">())</span>
+      <div class="highlight"><pre>    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">rss</span><span class="o">.</span><span class="n">entries</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">link</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">7</span> <span class="ow">and</span> <span class="n">item</span><span class="o">.</span><span class="n">link</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--- Processing </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">link</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">download_item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">folder_path</span><span class="p">)</span>
+            <span class="n">write_url</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">link</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">folder_path</span><span class="p">)</span>
+            <span class="n">urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">link</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>  <span class="c1"># Wait TIMEOUT seconds to avoid DDoS blacklistings...</span>
 
-            <span class="n">cifra</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">zlib</span><span class="o">.</span><span class="n">adler32</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">link</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))))</span>
-            <span class="n">nome</span><span class="o">=</span><span class="n">nome</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">cifra</span><span class="o">+</span><span class="s2">&quot;.html&quot;</span> <span class="c1"># let&#39;s set the name of the output file based on the time</span>
-            
-            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">link</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
-               
-                <span class="n">page</span><span class="o">=</span><span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">build_opener</span><span class="p">()</span>
-                <span class="n">page</span><span class="o">.</span><span class="n">addheaders</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Referer&#39;</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">link</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;User-agent&#39;</span><span class="p">,</span><span class="s1">&#39;Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)&#39;</span><span class="p">)]</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">r</span><span class="o">=</span><span class="n">page</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">link</span><span class="p">)</span>
-                    <span class="n">txt</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-                    <span class="n">out</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="n">nome</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
-                    <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
-                    <span class="n">out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="k">except</span><span class="p">:</span>
-                    <span class="n">out2</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="s2">&quot;notfound.txt&quot;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
-                    <span class="n">out2</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">link</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="n">out2</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">link</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Add this item to the downloaded URLS file</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span> <span class="c1"># Let&#39;s flush the internal buffer</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">fsync</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span> <span class="c1"># Let&#39;s force the write of all internal buffers to disk</span>
-                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>   <span class="c1"># Wait TIMEOUT seconds to avoid DDoS blacklistings...</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
-        <span class="n">main</span><span class="p">()</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="vm">__doc__</span><span class="p">)</span>
 
 </pre></div>
     </div>

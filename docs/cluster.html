@@ -26,6 +26,7 @@
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span>   <span class="n">loadtxt</span><span class="p">,</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">savetxt</span>
 <span class="kn">from</span> <span class="nn">scipy.cluster.vq</span> <span class="kn">import</span>   <span class="n">vq</span><span class="p">,</span> <span class="n">kmeans</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">dot</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">Tk</span><span class="p">,</span> <span class="n">Canvas</span><span class="p">,</span> <span class="n">Scale</span><span class="p">,</span> <span class="n">HORIZONTAL</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;david&#39;</span>
@@ -208,9 +209,7 @@ publicação e Y o cluster?
 O ideal será talvez utilizar o tkinter e o Canvas</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="o">*</span>
-
-<span class="n">root</span> <span class="o">=</span> <span class="n">Tk</span><span class="p">()</span>
+      <div class="highlight"><pre><span class="n">root</span> <span class="o">=</span> <span class="n">Tk</span><span class="p">()</span>
 <span class="n">root</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Clustering &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; examples in &quot;</span> <span class="o">+</span>
            <span class="nb">str</span><span class="p">(</span><span class="n">K</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; clusters&quot;</span><span class="p">)</span>
 <span class="n">largura</span> <span class="o">=</span> <span class="mi">1400</span>
@@ -360,20 +359,9 @@ O ideal será talvez utilizar o tkinter e o Canvas</p>
 
 <span class="n">drawBack</span><span class="p">()</span>
 <span class="n">drawPoints</span><span class="p">()</span>
-<span class="n">drawArcs</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-15'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-15'>#</a>
-      </div>
-      <p>import cProfile
-cProfile.run(&lsquo;drawArcs(None)&rsquo;,&rsquo;drawArcs.prof&rsquo;)</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="n">mainloop</span><span class="p">()</span>
+<span class="n">drawArcs</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+<span class="n">Tk</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span>
 
 <span class="n">log</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
 

@@ -144,15 +144,14 @@
       <p>f=open(&lsquo;features.txt&rsquo;,&rsquo;a&rsquo;)</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">feature</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">b</span><span class="p">]</span>
+      <div class="highlight"><pre>    <span class="n">feature</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">b</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">wds</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
             <span class="n">feature</span><span class="p">[</span><span class="n">b</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">feature</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;Feature Not Writen&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Feature Not Writen: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
     </div>
@@ -277,13 +276,11 @@
       <p>Load bag of words</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="n">b</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">bagf</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-<span class="n">c</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-<span class="n">b</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+      <div class="highlight"><pre><span class="n">c</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">bagf</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
 
 <span class="n">bag</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
     <span class="n">bag</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
 <span class="n">log</span><span class="p">(</span><span class="s2">&quot;Using Features Dimension: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bag</span><span class="p">)))</span></pre></div>
@@ -305,8 +302,8 @@
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="n">theseus</span><span class="o">.</span><span class="n">DocNode</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">),</span> <span class="n">file</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">ttl</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
         <span class="n">docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">log</span><span class="p">(</span><span class="s2">&quot;Problem reading file: &quot;</span> <span class="o">+</span> <span class="n">file</span> <span class="o">+</span> <span class="s2">&quot; -- &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> - Problem reading file: &quot;</span> <span class="o">+</span> <span class="n">file</span> <span class="o">+</span> <span class="s2">&quot; -- &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">0</span><span class="p">]))</span>
 
 <span class="n">log</span><span class="p">(</span><span class="s2">&quot;Total Files Read : &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)))</span></pre></div>
     </div>
