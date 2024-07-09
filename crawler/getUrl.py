@@ -67,7 +67,7 @@ def download_rss(rss_url, folder_path: str) -> None:
         with open(os.path.join(folder_path, "rss.xml"), "w") as out:
             out.write(r.text)
     else:
-        print("Error, no RSS to download")
+        print("*** Error, no RSS to download")
 
 
 def main(folder_path, timeout, rss_url):
@@ -81,6 +81,7 @@ def main(folder_path, timeout, rss_url):
     # Let's iterate over all entries in the parsed RSS
     for item in rss.entries:
         if len(item.link) > 7 and item.link not in urls:
+            print(f"--- Processing {item.link}")
             download_item(item, folder_path)
             write_url(item.link + "\n", folder_path)
             urls.append(item.link)
