@@ -24,14 +24,17 @@ from typing import List
 
 def load_urls(folder_path: str) -> List[str]:
     try:
-        with open(f"{folder_path}/urls.txt", 'r') as file:
+        with open(f"{folder_path}/urls.txt", "r") as file:
             return [line.split()[0] for line in file]
     except FileNotFoundError:
         return []
 
 
-def write_url(item: str, folder_path: str, ) -> None:
-    with open(f"{folder_path}/urls.txt", 'a') as file:
+def write_url(
+    item: str,
+    folder_path: str,
+) -> None:
+    with open(f"{folder_path}/urls.txt", "a") as file:
         file.write(item)
 
 
@@ -51,19 +54,21 @@ def download_item(item, folder_path: str) -> None:
     r = requests.get(item.link)
     if r.status_code == 200:
         filename = generate_filename(item)
-        with open(os.path.join(folder_path, filename), 'w', encoding='utf-8') as out:
+        with open(os.path.join(folder_path, filename), "w", encoding="utf-8") as out:
             out.write(r.text)
     else:
-        with open(os.path.join(folder_path, "notfound.txt"), 'a') as out:
+        with open(os.path.join(folder_path, "notfound.txt"), "a") as out:
             out.write(f"{item.link}\n")
+
 
 def download_rss(rss_url, folder_path: str) -> None:
     r = requests.get(rss_url)
     if r.status_code == 200:
-        with open(os.path.join(folder_path, "rss.xml"), 'w') as out:
+        with open(os.path.join(folder_path, "rss.xml"), "w") as out:
             out.write(r.text)
     else:
         print("Error, no RSS to download")
+
 
 def main(folder_path, timeout, rss_url):
     """
@@ -82,7 +87,7 @@ def main(folder_path, timeout, rss_url):
             time.sleep(timeout)  # Wait TIMEOUT seconds to avoid DDoS blacklistings...
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if len(sys.argv) == 4:
         main(sys.argv[1], int(sys.argv[2]), sys.argv[3])
     else:
