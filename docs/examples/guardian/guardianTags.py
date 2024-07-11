@@ -36,8 +36,8 @@ for doc in list(docs.items()):
                 except KeyError:
                     G.add_edge(noi, noj, weight=1)
 
-for e in G.edges():
-    G.edge[e[0]][e[1]]['weight'] /= 2
+for edge in G.edges():
+    G.edge[edge[0]][edge[1]]['weight'] /= 2
 
 print(len(G.nodes()))
 print(len(G.edges()))

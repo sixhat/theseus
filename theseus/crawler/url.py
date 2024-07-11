@@ -1,25 +1,26 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-getUrl.py
+url.py
 =========
 
 Parses a downloaded RSS file and downloads all items in the Feed
 
 Usage:
-    getUrl.py <folder> <timeout> <rss_url>
+    url.py <folder> <timeout> <rss_url>
 
     folder is the folder where the rss.xml file was placed.
     timeout is in seconds
 """
 
-import sys
 import os
-import feedparser
+import sys
 import time
 import zlib
-import requests
 from typing import List
+
+import feedparser
+import requests
 
 
 def load_urls(folder_path: str) -> List[str]:
@@ -30,10 +31,7 @@ def load_urls(folder_path: str) -> List[str]:
         return []
 
 
-def write_url(
-    item: str,
-    folder_path: str,
-) -> None:
+def write_url(item: str, folder_path: str) -> None:
     with open(f"{folder_path}/urls.txt", "a") as file:
         file.write(item)
 
@@ -46,7 +44,7 @@ def generate_filename(item) -> str:
         print(f"Exception when parsing timestamp: {e}")
         timestamp = time.strftime("%Y-%j_%H-%M-%S", time.gmtime())
 
-    cifra = str(zlib.adler32(item.link.encode()))
+    cifra = str(zlib.crc32(item.link.encode()))
     return f"{timestamp}_{cifra}.html"
 
 

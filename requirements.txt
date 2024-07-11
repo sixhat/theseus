@@ -2,7 +2,6 @@ networkx~=3.3
 beautifulsoup4~=4.12.3
 numpy~=1.26.4
 scipy~=1.13.1
-zlib~=1.2.13
 future~=0.18.3
 feedparser~=6.0.8
 requests~=2.32.2
