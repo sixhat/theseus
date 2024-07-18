@@ -11,12 +11,13 @@ An Generic Q-analysis collection of scripts
 
 """
 
-import json
 import argparse
-import numpy
-import networkx as nx
-import os
 import codecs
+import json
+import os
+
+import networkx as nx
+import numpy
 
 
 def usage():
@@ -56,7 +57,7 @@ def load_edge_file(file, sep=':'):
     A = []
     B = []
     graph = {}  # direct graph
-    rgraph = {}   # reverse graph
+    rgraph = {}  # reverse graph
     for line in f:
         st = line.strip().split(sep)
         el = st[0].strip()
@@ -74,7 +75,7 @@ def load_edge_file(file, sep=':'):
         if ot not in graph[el]['connected_to']:
             graph[el]['connected_to'].append(ot)
 
-        #reverse graph
+        # reverse graph
         if ot not in rgraph:
             rgraph[ot] = {}
             rgraph[ot]['name'] = ot
@@ -99,7 +100,7 @@ def calc_incidence_matrix(graph):
             sc = graph['B'].index(k)
             incidence_matrix[sl, sc] = 1
 
-    #print I
+    # print I
     numpy.savetxt("incidence.txt", incidence_matrix, fmt='%1d')
     return incidence_matrix
 
@@ -114,20 +115,21 @@ def calc_shared_vertex_matrix(graph, incidence=None):
     SVM = numpy.zeros((len(graph['A']), len(graph['A'])), dtype=int)
     print("-- computing Shared Face Matrix - shape ", SVM.shape)
     for line in range(len(incidence)):
-        #print "-- processing line nr. ", line
+        # print "-- processing line nr. ", line
         for col in range(line, len(incidence)):
             SVM[line, col] = numpy.dot(incidence[line, :], incidence[col, :])
             SVM[col, line] = SVM[line, col]
-            #print SVM
+            # print SVM
     numpy.savetxt('shared_face.txt', SVM, fmt='%1d')
     return SVM
+
 
 ## ---- Program starts running here parsing command line options...
 
 parser = argparse.ArgumentParser(
-    description='Theseus Q-analysis Processor '\
+    description='Theseus Q-analysis Processor ' \
                 '' + __version__,
-    epilog="[*] - Q-analysis is alpha state. Be"\
+    epilog="[*] - Q-analysis is alpha state. Be" \
            " careful with its use.")
 
 parser.add_argument('-t', '--tagfile', help='Tag file to load',
@@ -157,7 +159,6 @@ elif args.jsonfile is not None:
 ## simplicial complex
 json_graph(g)
 
-
 ## incidence matrix
 incidence_matrix = calc_incidence_matrix(g)
 
@@ -167,29 +168,27 @@ SVM = calc_shared_vertex_matrix(g, incidence_matrix)
 ## Algoritmo para calcular os simlex de diferentes q-order e as q-chains
 
 
-
-
 print("-- Incidence Matrix")
 print(incidence_matrix)
 print("-- Shared Vertex Matrix")
 print(SVM)
 
 
-#print "Maximum value of SVM ", SVM.max()
-#print "Mean value of SVM ", SVM.mean()
+# print "Maximum value of SVM ", SVM.max()
+# print "Mean value of SVM ", SVM.mean()
 
 def calculate_sets_q(sets, A):
     all = []
     for x in range(len(sets)):
-        #print "-- %d" %x
-        if len(sets[x]) > 0: #and sets[x] not in all:
+        # print "-- %d" %x
+        if len(sets[x]) > 0:  # and sets[x] not in all:
             comp = sets[x]
 
             ## First check to see if this comp is a subset of a final (all)
             # set, this meaning that we don't need to compute it.
             b = False
             for a in all:
-                if comp <= a: # equivalent to comp.issubset(a)
+                if comp <= a:  # equivalent to comp.issubset(a)
                     b = True
                     break
             if (b):
@@ -197,16 +196,16 @@ def calculate_sets_q(sets, A):
 
             # the component that we ara analysing now isn't part of a
             # component yet so we need to union it with others
-            #print "-- initial" , comp
+            # print "-- initial" , comp
             for s in sets:
                 if s.issubset(comp):
                     continue
                 if not comp.isdisjoint(s):
-                    #print "-- union with",s
+                    # print "-- union with",s
                     comp.update(s)
-                    #print comp
+                    # print comp
                     if len(comp) == len(A):
-                    #   print "-- FULL HOUSE"
+                        #   print "-- FULL HOUSE"
                         return [comp]
             if comp not in all:
                 all.append(comp)
@@ -221,16 +220,17 @@ def areConnected(a1, b1, q=1):
     else:
         return False
 
+
 for q in range(SVM.max()):
     sets = []
     print("")
     print("-- %d-connected Matrix" % q)
-    #print SVM*(SVM>=(q+1))
+    # print SVM*(SVM>=(q+1))
     for row in SVM:
         a = numpy.where(row >= (q + 1))
         sets.append(set(a[0]))
-        #print sets
-    #print set(SVM)
+        # print sets
+    # print set(SVM)
 
     print("-- q=", q)
     res = calculate_sets_q(sets, g['A'])
@@ -255,14 +255,8 @@ for q in range(SVM.max()):
                 if areConnected(a, b, q):
                     G.add_edge(out[x], out[y])
 
-    #nx.write_pajek(G, outf+'.net')
-    #nx.write_weighted_edgelist(G, outf+'.edge', delimiter=',')
-    #nx.write_gexf(G, outf+'.gexf')
-    #nx.write_gml(G, outf+'.gml')
+    # nx.write_pajek(G, outf+'.net')
+    # nx.write_weighted_edgelist(G, outf+'.edge', delimiter=',')
+    # nx.write_gexf(G, outf+'.gexf')
+    # nx.write_gml(G, outf+'.gml')
     nx.write_graphml(G, out_file + '.graphml', encoding='utf-8')
-
-
-
-
-
-

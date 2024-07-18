@@ -25,6 +25,11 @@ Theseus will end up (eventually) being made of 4 groups of programs/modules/scri
 * **Utils** (accessory methods and utilities for pre and post processing)
 * **Examples** (To help users to start using **theseus**)
 
+Interesting and Related
+=======================
+
+* [Arxiv-sanity](https://github.com/karpathy/arxiv-sanity-lite)
+
 Contributors
 ============
 
